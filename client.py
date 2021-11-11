@@ -49,7 +49,7 @@ class MainFrame(ttk.Frame):
 
         # Profile Button settings ---------
         self.btn_profile = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_profile_img)
-        self.btn_profile.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
+        self.btn_profile.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Settings Button settings --------
         self.btn_settings = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_settings_img)
@@ -65,11 +65,17 @@ class MainFrame(ttk.Frame):
 
         # News Button settings ------------
         self.btn_news = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_news_img)
-        self.btn_news.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
+        self.btn_news.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Create Button settings ----------
-        self.btn_create = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_create_img)
-        self.btn_create.pack(side='top', expand='false', fill='both', anchor='c')
+        self.btn_create_state = True
+        self.btn_create = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_create_img,
+                                     command=self.chat_create)
+        self.btn_create.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
+
+        # Main chat Button settings -------
+        self.btn_main_chat = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_main_chat_img)
+        self.btn_main_chat.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Dialogue Notebook settings ------
         self.dialogue_notebook = ttk.Notebook(self.notebook_dialogue_frame)
@@ -102,19 +108,47 @@ class MainFrame(ttk.Frame):
         self.dialogue_canvas.configure(yscrollcommand=self.scrollbar_dialogue_canvas.set)
         self.scrollbar_dialogue_canvas.pack(side='right', expand='true', fill='y', anchor='c')
 
+    def chat_create(self):
+        # Button create Frame settings
+        def close_chat_create_frame():
+            self.btn_create_state = not self.btn_create_state
+            btn_create_frame.destroy()
+
+        if self.btn_create_state:
+            self.btn_create_state = not self.btn_create_state
+            btn_create_frame = tk.Toplevel()
+            btn_create_frame.title('Create new chat')
+            btn_create_frame.geometry('400x200')
+            btn_create_frame.resizable(False, False)
+
+            btn_create_frame.protocol("WM_DELETE_WINDOW", close_chat_create_frame)
+
     def recording_voice_message(self):
         # Voice Frame settings
         def close_voice_frame():
+            self.voice_button_notebook_state = not self.voice_button_notebook_state
             voice_frame.destroy()
+
+        def btn_play_state():
+            pass
 
         if self.voice_button_notebook_state:
             self.voice_button_notebook_state = not self.voice_button_notebook_state
             voice_frame = tk.Toplevel()
-            voice_frame.geometry('400x100')
+            voice_frame.title('Voice message')
+            voice_frame.geometry('500x60')
+            voice_frame.resizable(False, False)
+
+            btn_play_voice = ttk.Button(voice_frame, image=btn_play_img)
+            btn_play_voice.grid(row=0, column=0, padx=5, pady=10)
+
+            btn_replay_voice = ttk.Button(voice_frame, image=btn_replay_img)
+            btn_replay_voice.grid(row=0, column=1, padx=5, pady=10)
+
+            scale_voice = ttk.Scale(voice_frame, length=350, from_=0, to=100, value=0, orient='horizontal')
+            scale_voice.grid(row=0, column=2, columnspan=3, padx=5, pady=10)
 
             voice_frame.protocol("WM_DELETE_WINDOW", close_voice_frame)
-        else:
-            pass
 
     def open_media_file(self):
         file = askopenfilename()
@@ -166,11 +200,16 @@ if __name__ == '__main__':
     btn_music_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/104.png')
     btn_settings_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/45.png')
 
-    btn_news_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/9.png')
+    btn_news_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/36.png')
     btn_create_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/20.png')
+    btn_main_chat_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/9.png')
 
     btn_info_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/22.png')
+
     btn_voice_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/105.png')
+    btn_play_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/109.png')
+    btn_replay_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/21.png')
+
     btn_media_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/29.png')
 
     MainFrame(master)
