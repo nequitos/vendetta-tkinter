@@ -1,3 +1,44 @@
 {
-	"themes": []
+	"themes": [
+		{
+			"name": "vendetta",
+			"font": "Helvetica 10",
+			"type": "light",
+			"colors": {
+				"primary": "#2c3e50",
+				"secondary": "#95a5a6",
+				"success": "#18bc9c",
+				"info": "#3498db",
+				"warning": "#f39c12",
+				"danger": "#e74c3c",
+				"bg": "#ffffff",
+				"fg": "#212529",
+				"selectbg": "#95a5a6",
+				"selectfg": "#ffffff",
+				"border": "#ced4da",
+				"inputfg": "#212529",
+				"inputbg": "#ecf0f1"
+			}
+		},
+		{
+			"name": "fiery-sunset",
+			"font": "Helvetica 10",
+			"type": "dark",
+			"colors": {
+				"primary": "#5C5C5C",
+				"secondary": "#985C52",
+				"success": "#06a480",
+				"info": "#22769b",
+				"warning": "#E58657",
+				"danger": "#913033",
+				"bg": "#2e2e2e",
+				"fg": "#ffffff",
+				"selectbg": "#444444",
+				"selectfg": "#ffffff",
+				"border": "#222222",
+				"inputfg": "#333333",
+				"inputbg": "#adb5bd"
+			}
+		}
+	]
 }

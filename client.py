@@ -104,7 +104,8 @@ class MainFrame(ttk.Frame):
         self.dialogue_canvas.pack(side='left', expand='false', fill='both', anchor='c')
 
         # Dialogue Text settings ---------------------------------------------------------------------------------------
-        self.dialogue_text = tk.Text(self.text_dialogue_frame, height=5)
+        self.dialogue_text = tk.Text(self.text_dialogue_frame, bg='#5C5C5C', fg='white', insertbackground='white',
+                                     height=5)
         self.dialogue_text.pack(side='left', expand='false', fill='both', anchor='c')
 
         # Dialogue Canvas Scrollbar settings ---------------------------------------------------------------------------
@@ -235,7 +236,8 @@ class MusicFrame(ttk.Frame):
 
 
 if __name__ == '__main__':
-    style = Style(theme='fiery-sunset-6')
+    theme = 'fiery-sunset'
+    style = Style(theme='fiery-sunset')
 
     master = style.master
     master.geometry('750x550')
@@ -246,22 +248,22 @@ if __name__ == '__main__':
     master.configure(bg='#B66254')
     master.iconphoto(False, tk.PhotoImage(file='data/images/fsociety.gif'))
 
-    btn_profile_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/11.png')
-    btn_main_frame_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/7.png')
-    btn_music_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/104.png')
-    btn_settings_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/45.png')
+    btn_profile_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/11.png')
+    btn_main_frame_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/7.png')
+    btn_music_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/104.png')
+    btn_settings_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/45.png')
 
-    btn_news_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/36.png')
-    btn_create_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/20.png')
-    btn_main_chat_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/9.png')
+    btn_news_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/36.png')
+    btn_create_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/20.png')
+    btn_main_chat_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/9.png')
 
-    btn_info_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/22.png')
+    btn_info_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/' + theme + '/22.png')
 
-    btn_voice_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/105.png')
-    btn_play_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/109.png')
-    btn_replay_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/21.png')
+    btn_voice_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/' + theme + '/105.png')
+    btn_play_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/' + theme + '/109.png')
+    btn_replay_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/' + theme + '/21.png')
 
-    btn_media_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/29.png')
+    btn_media_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/' + theme + '/29.png')
 
     MainFrame(master)
 
