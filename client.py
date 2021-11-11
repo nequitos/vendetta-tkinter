@@ -237,7 +237,7 @@ class MusicFrame(ttk.Frame):
 
 if __name__ == '__main__':
     theme = 'fiery-sunset'
-    style = Style(theme='fiery-sunset')
+    style = Style(theme='fiery-sunset', themes_file='data/themes/json/ttkbootstrap_themes.json')
 
     master = style.master
     master.geometry('750x550')
