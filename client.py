@@ -11,7 +11,6 @@ class MainFrame(ttk.Frame):
 
         # Main Frame settings ------------------------------------------------------------------------------------------
         self.root = root
-        self.root.geometry('750x550')
         self.root.title('Vendetta Alpha')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
@@ -20,8 +19,9 @@ class MainFrame(ttk.Frame):
         self.root.bind("<Escape>", self.end_full_screen)
 
         # Styles settings ----------------------------------------------------------------------------------------------
-        style.configure('custom.Outline.TButton', padding=0, borderwidth=0, anchor='c')
-        style.configure('notebook_custom.Outline.TButton', borderwidth=0, anchor='c', foreground='black',)
+        style.configure('custom.secondary.Outline.TButton', padding=0, borderwidth=0, anchor='c')
+        style.configure('custom_notebook.secondary.Outline.TButton', borderwidth=0, anchor='c',
+                        foreground='white')
         style.configure('custom.Vertical.TScrollbar')
 
         # Tabs Frame settings ------------------------------------------------------------------------------------------
@@ -49,43 +49,48 @@ class MainFrame(ttk.Frame):
         self.text_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Profile Button settings --------------------------------------------------------------------------------------
-        self.btn_profile = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_profile_img)
+        self.btn_profile = ttk.Button(self.tabs_frame, style='custom.secondary.Outline.TButton', image=btn_profile_img)
         self.btn_profile.pack(side='top', expand='false', fill='both', anchor='c')
 
-        # Settings Button settings -------------------------------------------------------------------------------------
-        self.btn_settings = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_settings_img)
-        self.btn_settings.pack(side='bottom', expand='false', fill='both', anchor='c')
-
         # Main Button settings -----------------------------------------------------------------------------------------
-        self.btn_main = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_main_frame_img)
+        self.btn_main = ttk.Button(self.tabs_frame, style='custom.secondary.Outline.TButton', image=btn_main_frame_img,
+                                   command=self.main)
         self.btn_main.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
 
         # Music Button settings ----------------------------------------------------------------------------------------
-        self.btn_music = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_music_img,
+        self.btn_music = ttk.Button(self.tabs_frame, style='custom.secondary.Outline.TButton', image=btn_music_img,
                                     command=self.music)
         self.btn_music.pack(side='top', expand='false', fill='both', anchor='c')
 
+        # Settings Button settings -------------------------------------------------------------------------------------
+        self.btn_settings = ttk.Button(self.tabs_frame, style='custom.secondary.Outline.TButton',
+                                       image=btn_settings_img)
+        self.btn_settings.pack(side='bottom', expand='false', fill='both', anchor='c')
+
         # News Button settings -----------------------------------------------------------------------------------------
-        self.btn_news = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_news_img)
+        self.btn_news = ttk.Button(self.chats_frame, style='custom.secondary.Outline.TButton', image=btn_news_img)
         self.btn_news.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Create Button settings ---------------------------------------------------------------------------------------
-        self.btn_create = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_create_img,
+        self.btn_create = ttk.Button(self.chats_frame, style='custom.secondary.Outline.TButton', image=btn_create_img,
                                      command=self.chat_create)
         self.btn_create.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
 
         # Main chat Button settings ------------------------------------------------------------------------------------
-        self.btn_main_chat = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_main_chat_img)
+        self.btn_main_chat = ttk.Button(self.chats_frame, style='custom.secondary.Outline.TButton',
+                                        image=btn_main_chat_img)
         self.btn_main_chat.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Dialogue Notebook settings -----------------------------------------------------------------------------------
         self.dialogue_notebook = ttk.Notebook(self.notebook_dialogue_frame)
         info_frame_notebook = ttk.Frame(self.dialogue_notebook)
 
-        self.voice_button_notebook = ttk.Button(self.dialogue_notebook, style='secondary.TButton',
+        self.voice_button_notebook = ttk.Button(self.dialogue_notebook,
+                                                style='custom_notebook.secondary.Outline.TButton',
                                                 text='Записать голосовое сообщение.',
                                                 command=self.recording_voice_message)
-        self.media_button_notebook = ttk.Button(self.dialogue_notebook, style='secondary.TButton',
+        self.media_button_notebook = ttk.Button(self.dialogue_notebook,
+                                                style='custom_notebook.secondary.Outline.TButton',
                                                 text='Выбрать медиафайл.',
                                                 command=self.open_media_file)
 
@@ -110,10 +115,17 @@ class MainFrame(ttk.Frame):
         self.dialogue_canvas.configure(yscrollcommand=self.scrollbar_dialogue_canvas.set)
         self.scrollbar_dialogue_canvas.pack(side='right', expand='true', fill='y', anchor='c')
 
+    def main(self):
+        MainFrame(self.root)
+
     def music(self):
-        for i in self.root.grid_slaves():
+        for i in self.chats_frame.pack_slaves():
+            i.destroy()
+        for i in self.dialogue_frame.pack_slaves():
             i.destroy()
 
+        self.chats_frame.destroy()
+        self.dialogue_frame.destroy()
         MusicFrame(self.root)
 
     def chat_create(self):
@@ -142,14 +154,14 @@ class MainFrame(ttk.Frame):
         voice_frame.geometry('500x60')
         voice_frame.resizable(False, False)
 
-        btn_play_voice = ttk.Button(voice_frame, image=btn_play_img)
-        btn_play_voice.grid(row=0, column=0, padx=5, pady=10)
+        btn_play_voice = ttk.Button(voice_frame, style='custom.secondary.Outline.TButton', image=btn_play_img)
+        btn_play_voice.grid(row=0, column=0, padx=5, pady=15)
 
-        btn_replay_voice = ttk.Button(voice_frame, image=btn_replay_img)
-        btn_replay_voice.grid(row=0, column=1, padx=5, pady=10)
+        btn_replay_voice = ttk.Button(voice_frame, style='custom.secondary.Outline.TButton', image=btn_replay_img)
+        btn_replay_voice.grid(row=0, column=1, padx=5, pady=15)
 
-        scale_voice = ttk.Scale(voice_frame, length=350, from_=0, to=100, value=0, orient='horizontal')
-        scale_voice.grid(row=0, column=2, columnspan=3, padx=5, pady=10)
+        scale_voice = ttk.Scale(voice_frame, length=400, from_=0, to=100, value=0, orient='horizontal')
+        scale_voice.grid(row=0, column=2, columnspan=3, padx=10, pady=10)
 
         voice_frame.protocol("WM_DELETE_WINDOW", close_voice_frame)
 
@@ -192,7 +204,7 @@ class MusicFrame(ttk.Frame):
     def __init__(self, root, **kwargs):
         super(MusicFrame, self).__init__(root, **kwargs)
 
-        # Music Frame settings
+        # Music Frame settings -----------------------------------------------------------------------------------------
         self.root = root
         self.root.title('Music')
         self.root.minsize(width=697, height=450)
@@ -200,6 +212,16 @@ class MusicFrame(ttk.Frame):
         self.root.bind('<Configure>', lambda _: self.layout_resize())
         self.root.bind("<F11>", self.toggle_full_screen)
         self.root.bind("<Escape>", self.end_full_screen)
+
+        self.root_width = self.root.winfo_width()
+        self.root_height = self.root.winfo_height()
+
+        # Style settings -----------------------------------------------------------------------------------------------
+        style.configure('custom.TFrame', background='black')
+
+        # Notebook Frame settings --------------------------------------------------------------------------------------
+        self.music_notebook_frame = ttk.Frame(style='custom.TFrame', width=500, height=500)
+        self.music_notebook_frame.grid(row=0, column=1, columnspan=2, padx=5)
 
     def toggle_full_screen(self, event):
         self.full_screen_state = not self.full_screen_state
@@ -210,13 +232,14 @@ class MusicFrame(ttk.Frame):
         self.root.attributes("-fullscreen", self.full_screen_state)
 
     def layout_resize(self):
-        pass
+        main_frame_height = self.root.winfo_height()
 
 
 if __name__ == '__main__':
-    style = Style(theme='superhero')
+    style = Style(theme='fiery-sunset')
 
     master = style.master
+    master.geometry('750x550')
 
     for i in style.colors.label_iter():
         print(i, style.colors.get(i))
