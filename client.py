@@ -13,8 +13,11 @@ class MainFrame(ttk.Frame):
         self.root = root
         self.root.geometry('750x550')
         self.root.title('Vendetta Alpha')
-        self.root.bind('<Configure>', lambda _: self.layout_resize())
         self.root.minsize(width=697, height=450)
+        self.full_screen_state = False
+        self.root.bind('<Configure>', lambda _: self.layout_resize())
+        self.root.bind("<F11>", self.toggle_full_screen)
+        self.root.bind("<Escape>", self.end_full_screen)
 
         # Styles settings ----------------
         style.configure('custom.Outline.TButton', padding=0, borderwidth=1, anchor='c')
@@ -71,7 +74,10 @@ class MainFrame(ttk.Frame):
         # Dialogue Notebook settings ------
         self.dialogue_notebook = ttk.Notebook(self.notebook_dialogue_frame)
         info_frame_notebook = ttk.Frame(self.dialogue_notebook)
-        voice_button_notebook = ttk.Button(self.dialogue_notebook, text='Записать голосовое сообщение.')
+
+        self.voice_button_notebook_state = True
+        voice_button_notebook = ttk.Button(self.dialogue_notebook, text='Записать голосовое сообщение.',
+                                           command=self.recording_voice_message)
         media_button_notebook = ttk.Button(self.dialogue_notebook, text='Выбрать медиафайл.',
                                            command=self.open_media_file)
 
@@ -96,9 +102,31 @@ class MainFrame(ttk.Frame):
         self.dialogue_canvas.configure(yscrollcommand=self.scrollbar_dialogue_canvas.set)
         self.scrollbar_dialogue_canvas.pack(side='right', expand='true', fill='y', anchor='c')
 
+    def recording_voice_message(self):
+        # Voice Frame settings
+        def close_voice_frame():
+            voice_frame.destroy()
+
+        if self.voice_button_notebook_state:
+            self.voice_button_notebook_state = not self.voice_button_notebook_state
+            voice_frame = tk.Toplevel()
+            voice_frame.geometry('400x100')
+
+            voice_frame.protocol("WM_DELETE_WINDOW", close_voice_frame)
+        else:
+            pass
+
     def open_media_file(self):
         file = askopenfilename()
         print(file)
+
+    def toggle_full_screen(self, event):
+        self.full_screen_state = not self.full_screen_state
+        self.root.attributes("-fullscreen", self.full_screen_state)
+
+    def end_full_screen(self, event):
+        self.full_screen_state = not self.full_screen_state
+        self.root.attributes("-fullscreen", self.full_screen_state)
 
     def layout_resize(self):
         main_frame_height = self.root.winfo_height()
