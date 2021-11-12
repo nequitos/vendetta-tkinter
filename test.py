@@ -1,60 +1,20 @@
 
-
-# import tkinter as tk
-#
-#
-# root = tk.Tk()
-# root.geometry('300x300')
-# test = tk.PhotoImage(file='data/images/fsociety.gif')
-#
-# canvas = tk.Canvas(bg='red', scrollregion=(0, 0, 0, 1000), width=300, height=300)
-# canvas.pack(side='left', expand='true', fill='both', anchor='c')
-#
-# scroll = tk.Scrollbar(orient='vertical', command=canvas.yview)
-# canvas.configure(yscrollcommand=scroll.set)
-# scroll.pack(side='right', expand='false', fill='y', anchor='e')
-#
-# canvas.create_text(150, 150, text='Well')
-
-# btn = tk.Button(canvas, image=test)
-# btn.pack(side='top')
-
-# def get_buttons(widget):
-#     for i in range(30):
-#         tk.Button(widget, text=str(i)).pack(side='top')
-#
-# get_buttons(canvas)
-
-
-# root.mainloop()
-
-
+from tkinter.filedialog import askopenfilename
+from ttkbootstrap import Style, Colors
+from tkinter import ttk
 import tkinter as tk
-from tkinter import messagebox
-
-# root = tk.Tk()
-#
-# def on_closing():
-#     if messagebox.askokcancel("Quit", "Do you want to quit?"):
-#         root.destroy()
-#
-# root.protocol("WM_DELETE_WINDOW", on_closing)
-# root.mainloop()
 
 
-root = tk.Tk()
-root.geometry('600x500')
+style = Style(theme='fiery-sunset', themes_file='data/themes/json/ttkbootstrap_themes.json')
 
+master = style.master
+master.geometry('600x500')
 
-l1 = tk.Label(bg='red')
-l1.pack(side='left', expand='true', fill='both', anchor='w')
+canvas = tk.Canvas()
+canvas.pack(side='left', expand='true', fill='both', anchor='c')
 
-l2 = tk.Label(bg='blue')
-l2.pack(side='left', expand='true', fill='both', anchor='w')
+scrollbar = ttk.Scrollbar(command=canvas.yview, orient='vertical')
+canvas.configure(yscrollcammand=scrollbar.set)
+scrollbar.pack(side='left', expand='true', fill='y', anchor='c')
 
-l3 = tk.Label(bg='yellow')
-l3.pack(side='left', expand='true', fill='both', anchor='w')
-print(root.winfo_viewable())
-
-root.mainloop()
-
+master.mainloop()

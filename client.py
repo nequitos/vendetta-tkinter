@@ -58,48 +58,29 @@ class ChoseFrame(ttk.Frame):
                 tabs_frame_slaves.append(i)
 
     def profile(self):
-        for i in self.tabs_frame.pack_slaves():
-            if str(i['state']) == 'disabled':
-                i.configure(state='normal')
-
-        for i in self.root.grid_slaves():
-            if str(i) != '.!frame':
-                i.destroy()
+        [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
+        [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
         self.btn_profile.configure(state='disabled')
+        ProfileFrame(self.root)
 
     def main(self):
-        for i in self.tabs_frame.pack_slaves():
-            if str(i['state']) == 'disabled':
-                i.configure(state='normal')
-
-        for i in self.root.grid_slaves():
-            if str(i) != '.!frame':
-                i.destroy()
+        [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
+        [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
         self.btn_main.configure(state='disabled')
         MainFrame(self.root)
 
     def music(self):
-        for i in self.tabs_frame.pack_slaves():
-            if str(i['state']) == 'disabled':
-                i.configure(state='normal')
-
-        for i in self.root.grid_slaves():
-            if str(i) != '.!frame':
-                i.destroy()
+        [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
+        [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
         self.btn_music.configure(state='disabled')
         MusicFrame(self.root)
 
     def settings(self):
-        for i in self.tabs_frame.pack_slaves():
-            if str(i['state']) == 'disabled':
-                i.configure(state='normal')
-
-        for i in self.root.grid_slaves():
-            if str(i) != '.!frame':
-                i.destroy()
+        [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
+        [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
         self.btn_settings.configure(state='disabled')
         SettingsFrame(self.root)
@@ -116,6 +97,34 @@ class ChoseFrame(ttk.Frame):
         main_frame_height = self.root.winfo_height()
 
         self.tabs_frame.configure(height=main_frame_height)
+
+
+class ProfileFrame(ttk.Frame):
+    def __init__(self, root, **kwargs):
+        super(ProfileFrame, self).__init__(root, **kwargs)
+
+        # Profile Frame settings --------------------------------------------------------------------------------------
+        self.root = root
+        self.root.title('Music')
+        self.root.minsize(width=697, height=450)
+        self.full_screen_state = False
+        self.root.bind('<Configure>', lambda _: self.layout_resize())
+        self.root.bind("<F11>", self.toggle_full_screen)
+        self.root.bind("<Escape>", self.end_full_screen)
+
+        # Style settings -----------------------------------------------------------------------------------------------
+        style.configure('custom.TFrame', background='black')
+
+    def toggle_full_screen(self, event):
+        self.full_screen_state = not self.full_screen_state
+        self.root.attributes("-fullscreen", self.full_screen_state)
+
+    def end_full_screen(self, event):
+        self.full_screen_state = False
+        self.root.attributes("-fullscreen", self.full_screen_state)
+
+    def layout_resize(self):
+        main_frame_height = self.root.winfo_height()
 
 
 class MainFrame(ttk.Frame):
@@ -255,7 +264,6 @@ class MainFrame(ttk.Frame):
         self.root.attributes("-fullscreen", self.full_screen_state)
 
     def layout_resize(self):
-        print(self.chats_frame.pack_slaves())
         main_frame_height = self.root.winfo_height()
         dialogue_frame_width = (self.root.winfo_width() - tabs_frame_settings[0].winfo_width() -
                                 self.chats_frame.winfo_width())
@@ -297,8 +305,27 @@ class MusicFrame(ttk.Frame):
         style.configure('custom.TFrame', background='black')
 
         # Notebook Frame settings --------------------------------------------------------------------------------------
-        self.music_notebook_frame = ttk.Frame(style='custom.TFrame', width=500, height=500)
+        self.music_notebook_frame = ttk.Frame(style='custom.TFrame')
         self.music_notebook_frame.grid(row=0, column=1, columnspan=2, padx=5)
+
+        # Music Notebook settings --------------------------------------------------------------------------------------
+        self.music_notebook = ttk.Notebook(self.music_notebook_frame)
+
+        self.search_frame_notebook = ttk.Frame(self.music_notebook)
+        self.saves_frame_notebook = ttk.Frame(self.music_notebook)
+
+        self.music_notebook.add(self.search_frame_notebook, text='Поиск')
+        self.music_notebook.add(self.saves_frame_notebook, text='Сохранненые')
+
+        self.music_notebook.pack(side='top', expand='false', fill='both', anchor='c')
+
+        # Search Entry settings ----------------------------------------------------------------------------------------
+        self.search_entry_search = ttk.Entry(self.search_frame_notebook)
+        self.search_entry_search.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
+
+        # Saves Entry settings -----------------------------------------------------------------------------------------
+        self.search_entry_saves = ttk.Entry(self.saves_frame_notebook)
+        self.search_entry_saves.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
 
     def toggle_full_screen(self, event):
         self.full_screen_state = not self.full_screen_state
@@ -309,14 +336,19 @@ class MusicFrame(ttk.Frame):
         self.root.attributes("-fullscreen", self.full_screen_state)
 
     def layout_resize(self):
+        main_frame_width = self.root.winfo_width()
         main_frame_height = self.root.winfo_height()
+        tabs_frame_width = tabs_frame_settings[0].winfo_width()
+
+        tabs_frame_settings[0].configure(height=main_frame_height)
+        self.music_notebook.configure(width=(main_frame_width - tabs_frame_width), height=(main_frame_height-30))
 
 
 class SettingsFrame(ttk.Frame):
     def __init__(self, root, **kwargs):
         super(SettingsFrame, self).__init__(root, **kwargs)
 
-        # Music Frame settings -----------------------------------------------------------------------------------------
+        # Settings Frame settings --------------------------------------------------------------------------------------
         self.root = root
         self.root.title('Music')
         self.root.minsize(width=697, height=450)
@@ -339,6 +371,7 @@ class SettingsFrame(ttk.Frame):
     def layout_resize(self):
         main_frame_height = self.root.winfo_height()
 
+
 if __name__ == '__main__':
     theme = 'fiery-sunset'
     style = Style(theme='fiery-sunset', themes_file='data/themes/json/ttkbootstrap_themes.json')
@@ -353,8 +386,10 @@ if __name__ == '__main__':
     master.iconphoto(False, tk.PhotoImage(file='data/images/fsociety.gif'))
 
     btn_profile_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/11.png')
-    btn_main_frame_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/7.png')
-    btn_music_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/104.png')
+    #btn_main_frame_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/7.png')
+    btn_main_frame_img = tk.PhotoImage(file='data/images/rast/64x32/main.png')
+    #btn_music_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/104.png')
+    btn_music_img = tk.PhotoImage(file='data/images/rast/64x32/music.png')
     btn_settings_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/45.png')
 
     btn_news_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/36.png')
