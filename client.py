@@ -5,9 +5,13 @@ from tkinter import ttk
 import tkinter as tk
 
 
-class MainFrame(ttk.Frame):
+tabs_frame_settings = []
+tabs_frame_slaves = []
+
+
+class ChoseFrame(ttk.Frame):
     def __init__(self, root, **kwargs):
-        super(MainFrame, self).__init__(root, **kwargs)
+        super(ChoseFrame, self).__init__(root, **kwargs)
 
         # Main Frame settings ------------------------------------------------------------------------------------------
         self.root = root
@@ -20,32 +24,10 @@ class MainFrame(ttk.Frame):
 
         # Styles settings ----------------------------------------------------------------------------------------------
         style.configure('custom.Outline.TButton', padding=0, borderwidth=0, anchor='c')
-        style.configure('custom_notebook.TButton', borderwidth=0, anchor='c')
-        style.configure('custom.Vertical.TScrollbar')
 
         # Tabs Frame settings ------------------------------------------------------------------------------------------
         self.tabs_frame = ttk.Frame(width=66, height=550)
         self.tabs_frame.grid(row=0, column=0)
-
-        # Chats Frame settings -----------------------------------------------------------------------------------------
-        self.chats_frame = ttk.Frame(width=130, height=550)
-        self.chats_frame.grid(row=0, column=1, columnspan=2, padx=5)
-
-        # Dialogue Frame settings --------------------------------------------------------------------------------------
-        self.dialogue_frame = ttk.Frame(width=554, height=550)
-        self.dialogue_frame.grid(row=0, column=3, columnspan=5)
-
-        # Notebook Dialogue Frame settings -----------------------------------------------------------------------------
-        self.notebook_dialogue_frame = ttk.Frame(self.dialogue_frame)
-        self.notebook_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
-
-        # Canvas Dialogue Frame settings -------------------------------------------------------------------------------
-        self.canvas_dialogue_frame = ttk.Frame(self.dialogue_frame)
-        self.canvas_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
-
-        # Text Dialogue Frame settings ---------------------------------------------------------------------------------
-        self.text_dialogue_frame = ttk.Frame(self.dialogue_frame)
-        self.text_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Profile Button settings --------------------------------------------------------------------------------------
         self.btn_profile = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_profile_img,
@@ -66,6 +48,114 @@ class MainFrame(ttk.Frame):
         self.btn_settings = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_settings_img,
                                        command=self.settings)
         self.btn_settings.pack(side='bottom', expand='false', fill='both', anchor='c')
+
+        if len(tabs_frame_settings) <= 0:
+            for i in self.root.grid_slaves():
+                tabs_frame_settings.append(i)
+
+        if len(tabs_frame_slaves) <= 0:
+            for i in self.tabs_frame.pack_slaves():
+                tabs_frame_slaves.append(i)
+
+        print(tabs_frame_settings, tabs_frame_slaves)
+
+    def profile(self):
+        for i in self.tabs_frame.pack_slaves():
+            if str(i['state']) == 'disabled':
+                i.configure(state='normal')
+
+        for i in self.root.grid_slaves():
+            if str(i) != '.!frame':
+                i.destroy()
+
+        self.btn_profile.configure(state='disabled')
+
+    def main(self):
+        for i in self.tabs_frame.pack_slaves():
+            if str(i['state']) == 'disabled':
+                i.configure(state='normal')
+
+        for i in self.root.grid_slaves():
+            if str(i) != '.!frame':
+                i.destroy()
+
+        self.btn_main.configure(state='disabled')
+        MainFrame(self.root)
+
+    def music(self):
+        for i in self.tabs_frame.pack_slaves():
+            if str(i['state']) == 'disabled':
+                i.configure(state='normal')
+
+        for i in self.root.grid_slaves():
+            if str(i) != '.!frame':
+                i.destroy()
+
+        self.btn_music.configure(state='disabled')
+        MusicFrame(self.root)
+
+    def settings(self):
+        for i in self.tabs_frame.pack_slaves():
+            if str(i['state']) == 'disabled':
+                i.configure(state='normal')
+
+        for i in self.root.grid_slaves():
+            if str(i) != '.!frame':
+                i.destroy()
+
+        self.btn_settings.configure(state='disabled')
+
+    def toggle_full_screen(self, event):
+        self.full_screen_state = not self.full_screen_state
+        self.root.attributes("-fullscreen", self.full_screen_state)
+
+    def end_full_screen(self, event):
+        self.full_screen_state = False
+        self.root.attributes("-fullscreen", self.full_screen_state)
+
+    def layout_resize(self):
+        main_frame_height = self.root.winfo_height()
+
+        self.tabs_frame.configure(height=main_frame_height)
+
+
+class MainFrame(ttk.Frame):
+    def __init__(self, root, **kwargs):
+        super(MainFrame, self).__init__(root, **kwargs)
+
+        # Main Frame settings ------------------------------------------------------------------------------------------
+        self.root = root
+        self.root.title('Vendetta Alpha')
+        self.root.minsize(width=697, height=450)
+        self.full_screen_state = False
+        self.root.bind('<Configure>', lambda _: self.layout_resize())
+        self.root.bind("<F11>", self.toggle_full_screen)
+        self.root.bind("<Escape>", self.end_full_screen)
+
+        # Styles settings ----------------------------------------------------------------------------------------------
+        style.configure('custom.Outline.TButton', padding=0, borderwidth=0, anchor='c')
+        style.configure('custom_notebook.TButton', borderwidth=0, anchor='c')
+        style.configure('custom.Vertical.TScrollbar')
+
+        # Chats Frame settings -----------------------------------------------------------------------------------------
+        self.chats_frame = ttk.Frame(width=130, height=550)
+        self.chats_frame.grid(row=0, column=1, columnspan=2, padx=5)
+
+        # Dialogue Frame settings --------------------------------------------------------------------------------------
+        self.dialogue_frame = ttk.Frame(width=554, height=550)
+        self.dialogue_frame.grid(row=0, column=3, columnspan=5)
+
+        # Notebook Dialogue Frame settings -----------------------------------------------------------------------------
+        self.notebook_dialogue_frame = ttk.Frame(self.dialogue_frame)
+        self.notebook_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
+
+        # Canvas Dialogue Frame settings -------------------------------------------------------------------------------
+        self.canvas_dialogue_frame = ttk.Frame(self.dialogue_frame)
+        self.canvas_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
+
+        # Text Dialogue Frame settings ---------------------------------------------------------------------------------
+        self.text_dialogue_frame = ttk.Frame(self.dialogue_frame)
+        self.text_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
 
         # News Button settings -----------------------------------------------------------------------------------------
         self.btn_news = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_news_img)
@@ -115,54 +205,6 @@ class MainFrame(ttk.Frame):
                                                        command=self.dialogue_canvas.yview)
         self.dialogue_canvas.configure(yscrollcommand=self.scrollbar_dialogue_canvas.set)
         self.scrollbar_dialogue_canvas.pack(side='right', expand='true', fill='y', anchor='c')
-
-        print(self.tabs_frame.pack_slaves())
-
-    def profile(self):
-        for i in self.tabs_frame.pack_slaves():
-            if str(i['state']) == 'disabled':
-                i.configure(state='normal')
-
-        for i in self.root.grid_slaves():
-            if str(i) != '.!frame':
-                i.destroy()
-
-        self.btn_profile.configure(state='disabled')
-
-    def main(self):
-        for i in self.tabs_frame.pack_slaves():
-            if str(i['state']) == 'disabled':
-                i.configure(state='normal')
-
-        for i in self.root.grid_slaves():
-            if str(i) != '.!frame':
-                i.destroy()
-
-        self.btn_main.configure(state='disabled')
-        MainFrame(self.root)
-
-    def music(self):
-        for i in self.tabs_frame.pack_slaves():
-            if str(i['state']) == 'disabled':
-                i.configure(state='normal')
-
-        for i in self.root.grid_slaves():
-            if str(i) != '.!frame':
-                i.destroy()
-
-        self.btn_music.configure(state='disabled')
-        MusicFrame(self.root)
-
-    def settings(self):
-        for i in self.tabs_frame.pack_slaves():
-            if str(i['state']) == 'disabled':
-                i.configure(state='normal')
-
-        for i in self.root.grid_slaves():
-            if str(i) != '.!frame':
-                i.destroy()
-
-        self.btn_settings.configure(state='disabled')
 
     def chat_create(self):
         # Button create Frame settings ---------------------------------------------------------------------------------
@@ -215,10 +257,10 @@ class MainFrame(ttk.Frame):
 
     def layout_resize(self):
         main_frame_height = self.root.winfo_height()
-        dialogue_frame_width = (self.root.winfo_width() - self.tabs_frame.winfo_width() -
+        dialogue_frame_width = (self.root.winfo_width() - tabs_frame_settings[0].winfo_width() -
                                 self.chats_frame.winfo_width())
 
-        self.tabs_frame.configure(height=main_frame_height)
+        tabs_frame_settings[0].configure(height=main_frame_height)
         self.chats_frame.configure(height=main_frame_height)
         self.dialogue_frame.configure(width=dialogue_frame_width, height=main_frame_height)
 
@@ -301,6 +343,6 @@ if __name__ == '__main__':
 
     btn_media_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/' + theme + '/29.png')
 
-    MainFrame(master)
+    ChoseFrame(master)
 
     master.mainloop()
