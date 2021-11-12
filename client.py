@@ -48,12 +48,13 @@ class MainFrame(ttk.Frame):
         self.text_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Profile Button settings --------------------------------------------------------------------------------------
-        self.btn_profile = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_profile_img)
+        self.btn_profile = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_profile_img,
+                                      command=self.profile)
         self.btn_profile.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Main Button settings -----------------------------------------------------------------------------------------
         self.btn_main = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_main_frame_img,
-                                   command=self.main)
+                                   state='disabled', command=self.main)
         self.btn_main.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
 
         # Music Button settings ----------------------------------------------------------------------------------------
@@ -62,8 +63,8 @@ class MainFrame(ttk.Frame):
         self.btn_music.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Settings Button settings -------------------------------------------------------------------------------------
-        self.btn_settings = ttk.Button(self.tabs_frame, style='custom.Outline.TButton',
-                                       image=btn_settings_img)
+        self.btn_settings = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_settings_img,
+                                       command=self.settings)
         self.btn_settings.pack(side='bottom', expand='false', fill='both', anchor='c')
 
         # News Button settings -----------------------------------------------------------------------------------------
@@ -115,18 +116,53 @@ class MainFrame(ttk.Frame):
         self.dialogue_canvas.configure(yscrollcommand=self.scrollbar_dialogue_canvas.set)
         self.scrollbar_dialogue_canvas.pack(side='right', expand='true', fill='y', anchor='c')
 
+        print(self.tabs_frame.pack_slaves())
+
+    def profile(self):
+        for i in self.tabs_frame.pack_slaves():
+            if str(i['state']) == 'disabled':
+                i.configure(state='normal')
+
+        for i in self.root.grid_slaves():
+            if str(i) != '.!frame':
+                i.destroy()
+
+        self.btn_profile.configure(state='disabled')
+
     def main(self):
+        for i in self.tabs_frame.pack_slaves():
+            if str(i['state']) == 'disabled':
+                i.configure(state='normal')
+
+        for i in self.root.grid_slaves():
+            if str(i) != '.!frame':
+                i.destroy()
+
+        self.btn_main.configure(state='disabled')
         MainFrame(self.root)
 
     def music(self):
-        for i in self.chats_frame.pack_slaves():
-            i.destroy()
-        for i in self.dialogue_frame.pack_slaves():
-            i.destroy()
+        for i in self.tabs_frame.pack_slaves():
+            if str(i['state']) == 'disabled':
+                i.configure(state='normal')
 
-        self.chats_frame.destroy()
-        self.dialogue_frame.destroy()
+        for i in self.root.grid_slaves():
+            if str(i) != '.!frame':
+                i.destroy()
+
+        self.btn_music.configure(state='disabled')
         MusicFrame(self.root)
+
+    def settings(self):
+        for i in self.tabs_frame.pack_slaves():
+            if str(i['state']) == 'disabled':
+                i.configure(state='normal')
+
+        for i in self.root.grid_slaves():
+            if str(i) != '.!frame':
+                i.destroy()
+
+        self.btn_settings.configure(state='disabled')
 
     def chat_create(self):
         # Button create Frame settings ---------------------------------------------------------------------------------
@@ -160,7 +196,7 @@ class MainFrame(ttk.Frame):
         btn_replay_voice = ttk.Button(voice_frame, style='custom.secondary.Outline.TButton', image=btn_replay_img)
         btn_replay_voice.grid(row=0, column=1, padx=5, pady=15)
 
-        scale_voice = ttk.Scale(voice_frame, length=400, from_=0, to=100, value=0, orient='horizontal')
+        scale_voice = ttk.Scale(voice_frame, length=350, from_=0, to=100, value=0, orient='horizontal')
         scale_voice.grid(row=0, column=2, columnspan=3, padx=10, pady=10)
 
         voice_frame.protocol("WM_DELETE_WINDOW", close_voice_frame)

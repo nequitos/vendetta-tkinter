@@ -32,11 +32,26 @@
 import tkinter as tk
 from tkinter import messagebox
 
+# root = tk.Tk()
+#
+# def on_closing():
+#     if messagebox.askokcancel("Quit", "Do you want to quit?"):
+#         root.destroy()
+#
+# root.protocol("WM_DELETE_WINDOW", on_closing)
+# root.mainloop()
+
+
 root = tk.Tk()
+root.geometry('600x500')
 
-def on_closing():
-    if messagebox.askokcancel("Quit", "Do you want to quit?"):
-        root.destroy()
+l1 = tk.Label(bg='red')
+l1.pack(side='left', expand='true', fill='both', anchor='w')
 
-root.protocol("WM_DELETE_WINDOW", on_closing)
+l2 = tk.Label(bg='blue')
+l2.pack(side='left', expand='true', fill='both', anchor='w')
+
+l3 = tk.Label(bg='yellow')
+l3.pack(side='left', expand='true', fill='both', anchor='w')
+
 root.mainloop()
