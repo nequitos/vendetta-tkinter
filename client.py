@@ -36,7 +36,7 @@ class ChoseFrame(ttk.Frame):
 
         # Main Button settings -----------------------------------------------------------------------------------------
         self.btn_main = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_main_frame_img,
-                                   state='disabled', command=self.main)
+                                   command=self.main)
         self.btn_main.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
 
         # Music Button settings ----------------------------------------------------------------------------------------
@@ -56,8 +56,6 @@ class ChoseFrame(ttk.Frame):
         if len(tabs_frame_slaves) <= 0:
             for i in self.tabs_frame.pack_slaves():
                 tabs_frame_slaves.append(i)
-
-        print(tabs_frame_settings, tabs_frame_slaves)
 
     def profile(self):
         for i in self.tabs_frame.pack_slaves():
@@ -104,6 +102,7 @@ class ChoseFrame(ttk.Frame):
                 i.destroy()
 
         self.btn_settings.configure(state='disabled')
+        SettingsFrame(self.root)
 
     def toggle_full_screen(self, event):
         self.full_screen_state = not self.full_screen_state
@@ -256,6 +255,7 @@ class MainFrame(ttk.Frame):
         self.root.attributes("-fullscreen", self.full_screen_state)
 
     def layout_resize(self):
+        print(self.chats_frame.pack_slaves())
         main_frame_height = self.root.winfo_height()
         dialogue_frame_width = (self.root.winfo_width() - tabs_frame_settings[0].winfo_width() -
                                 self.chats_frame.winfo_width())
@@ -268,12 +268,14 @@ class MainFrame(ttk.Frame):
             self.dialogue_canvas.configure(width=(dialogue_frame_width - 35),
                                            height=(main_frame_height - 43 - self.dialogue_notebook.winfo_height()))
         except Exception as ex:
-            print("Виджет 'tkinter Canvas' несовеместим для использования с ttk.\n" + str(ex))
+            #print("Виджет 'tkinter Canvas' несовеместим для использования с ttk.\n" + str(ex))
+            pass
 
         try:
             self.dialogue_text.configure(width=dialogue_frame_width)
         except Exception as ex:
-            print("Виджет 'tkinter Text' несовеместим для использования с ttk.\n" + str(ex))
+            #print("Виджет 'tkinter Text' несовеместим для использования с ttk.\n" + str(ex))
+            pass
 
         self.dialogue_notebook.configure(width=dialogue_frame_width)
 
@@ -290,9 +292,6 @@ class MusicFrame(ttk.Frame):
         self.root.bind('<Configure>', lambda _: self.layout_resize())
         self.root.bind("<F11>", self.toggle_full_screen)
         self.root.bind("<Escape>", self.end_full_screen)
-
-        self.root_width = self.root.winfo_width()
-        self.root_height = self.root.winfo_height()
 
         # Style settings -----------------------------------------------------------------------------------------------
         style.configure('custom.TFrame', background='black')
@@ -312,6 +311,33 @@ class MusicFrame(ttk.Frame):
     def layout_resize(self):
         main_frame_height = self.root.winfo_height()
 
+
+class SettingsFrame(ttk.Frame):
+    def __init__(self, root, **kwargs):
+        super(SettingsFrame, self).__init__(root, **kwargs)
+
+        # Music Frame settings -----------------------------------------------------------------------------------------
+        self.root = root
+        self.root.title('Music')
+        self.root.minsize(width=697, height=450)
+        self.full_screen_state = False
+        self.root.bind('<Configure>', lambda _: self.layout_resize())
+        self.root.bind("<F11>", self.toggle_full_screen)
+        self.root.bind("<Escape>", self.end_full_screen)
+
+        # Style settings -----------------------------------------------------------------------------------------------
+        style.configure('custom.TFrame', background='black')
+
+    def toggle_full_screen(self, event):
+        self.full_screen_state = not self.full_screen_state
+        self.root.attributes("-fullscreen", self.full_screen_state)
+
+    def end_full_screen(self, event):
+        self.full_screen_state = False
+        self.root.attributes("-fullscreen", self.full_screen_state)
+
+    def layout_resize(self):
+        main_frame_height = self.root.winfo_height()
 
 if __name__ == '__main__':
     theme = 'fiery-sunset'

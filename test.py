@@ -45,6 +45,7 @@ from tkinter import messagebox
 root = tk.Tk()
 root.geometry('600x500')
 
+
 l1 = tk.Label(bg='red')
 l1.pack(side='left', expand='true', fill='both', anchor='w')
 
@@ -53,5 +54,7 @@ l2.pack(side='left', expand='true', fill='both', anchor='w')
 
 l3 = tk.Label(bg='yellow')
 l3.pack(side='left', expand='true', fill='both', anchor='w')
+print(root.winfo_viewable())
 
 root.mainloop()
+
