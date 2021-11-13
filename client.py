@@ -4,9 +4,58 @@ from ttkbootstrap import Style, Colors
 from tkinter import ttk
 import tkinter as tk
 
+from PIL import ImageTk, Image
+
 
 tabs_frame_settings = []
 tabs_frame_slaves = []
+
+
+class ReturnAnimationWidget:
+    def __init__(self, widget, filename):
+        self.widget = widget
+        filename = filename
+        image = Image.open(filename)
+        cadres = []
+
+        try:
+            while True:
+                cadres.append(image.copy())  # заполнение списка кадрами
+                image.seek(len(cadres))  # skip to next frame
+        except EOFError as ex:
+            # print(ex)
+            pass  # we're done
+
+        try:
+            self.delay = image.info['duration']  # возврат задержки
+        except KeyError:
+            self.delay = 100
+
+        first = cadres[0].convert('RGBA')  # конвертирование в RGBA
+        self.frames = [ImageTk.PhotoImage(first)]
+
+        self.widget.configure(image=self.frames[0])
+
+        temp = cadres[0]
+        for image in cadres[1:]:  # доконвертирование картинок
+            temp.paste(image)
+            frame = temp.convert('RGBA')
+            self.frames.append(ImageTk.PhotoImage(frame))
+
+        self.index = 0
+        self.cancel = self.widget.after(self.delay, self.play)
+
+    def play(self):
+        self.widget.config(image=self.frames[self.index])  # проигрывание каждого фрейма
+        if self.index != len(self.frames):
+            self.index += 1
+
+        print(len(self.frames), self.index)
+        self.cancel = self.widget.after(self.delay, self.play)
+
+        if self.index == len(self.frames):
+            self.widget.after_cancel(self.cancel)
+            #self.widget.configure(image=self.frames[0])
 
 
 class ChoseFrame(ttk.Frame):
@@ -82,6 +131,7 @@ class ChoseFrame(ttk.Frame):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
         [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
+        ReturnAnimationWidget(self.btn_settings, 'data/images/GIF/settings_2.gif')
         self.btn_settings.configure(state='disabled')
         SettingsFrame(self.root)
 
@@ -105,7 +155,7 @@ class ProfileFrame(ttk.Frame):
 
         # Profile Frame settings --------------------------------------------------------------------------------------
         self.root = root
-        self.root.title('Profile')
+        self.root.title('Vendetta Profile')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
         self.root.bind('<Configure>', lambda _: self.layout_resize())
@@ -125,6 +175,8 @@ class ProfileFrame(ttk.Frame):
 
     def layout_resize(self):
         main_frame_height = self.root.winfo_height()
+
+        tabs_frame_settings[0].configure(height=main_frame_height)
 
 
 class MainFrame(ttk.Frame):
@@ -294,7 +346,7 @@ class MusicFrame(ttk.Frame):
 
         # Music Frame settings -----------------------------------------------------------------------------------------
         self.root = root
-        self.root.title('Music')
+        self.root.title('Vendetta Music')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
         self.root.bind('<Configure>', lambda _: self.layout_resize())
@@ -313,9 +365,11 @@ class MusicFrame(ttk.Frame):
 
         self.search_frame_notebook = ttk.Frame(self.music_notebook)
         self.saves_frame_notebook = ttk.Frame(self.music_notebook)
+        self.playlists_notebook = ttk.Frame(self.music_notebook)
 
         self.music_notebook.add(self.search_frame_notebook, text='Поиск')
         self.music_notebook.add(self.saves_frame_notebook, text='Сохранненые')
+        self.music_notebook.add(self.playlists_notebook, text='Плейлисты')
 
         self.music_notebook.pack(side='top', expand='false', fill='both', anchor='c')
 
@@ -341,8 +395,7 @@ class MusicFrame(ttk.Frame):
         tabs_frame_width = tabs_frame_settings[0].winfo_width()
 
         tabs_frame_settings[0].configure(height=main_frame_height)
-        self.music_notebook.configure(width=(main_frame_width - tabs_frame_width))
-        self.search_frame_notebook.configure(height=(main_frame_height - 60))
+        self.music_notebook.configure(width=(main_frame_width - tabs_frame_width), height=(main_frame_height - 31))
 
 
 class SettingsFrame(ttk.Frame):
@@ -351,7 +404,7 @@ class SettingsFrame(ttk.Frame):
 
         # Settings Frame settings --------------------------------------------------------------------------------------
         self.root = root
-        self.root.title('Settings')
+        self.root.title('Vendetta Settings')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
         self.root.bind('<Configure>', lambda _: self.layout_resize())
@@ -372,6 +425,8 @@ class SettingsFrame(ttk.Frame):
     def layout_resize(self):
         main_frame_height = self.root.winfo_height()
 
+        tabs_frame_settings[0].configure(height=main_frame_height)
+
 
 if __name__ == '__main__':
     theme = 'fiery-sunset'
@@ -380,28 +435,25 @@ if __name__ == '__main__':
     master = style.master
     master.geometry('750x550')
 
-    for i in style.colors.label_iter():
-        print(i, style.colors.get(i))
-
     master.configure(bg='#B66254')
     master.iconphoto(False, tk.PhotoImage(file='data/images/fsociety.gif'))
 
-    btn_profile_img = tk.PhotoImage(file='data/images/rast/64x32/profile.png')
-    btn_main_frame_img = tk.PhotoImage(file='data/images/rast/64x32/main.png')
-    btn_music_img = tk.PhotoImage(file='data/images/rast/64x32/music.png')
-    btn_settings_img = tk.PhotoImage(file='data/images/rast/64x32/settings.png')
+    btn_profile_img = tk.PhotoImage(file='data/images/PNG/64x32/profile.png')
+    btn_main_frame_img = tk.PhotoImage(file='data/images/PNG/64x32/main.png')
+    btn_music_img = tk.PhotoImage(file='data/images/PNG/64x32/music.png')
+    btn_settings_img = tk.PhotoImage(file='data/images/GIF/settings_2.gif')
 
-    btn_news_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/36.png')
-    btn_create_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/20.png')
-    btn_main_chat_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/9.png')
+    btn_news_img = tk.PhotoImage(file='data/images/PNG Files/64x32/' + theme + '/36.png')
+    btn_create_img = tk.PhotoImage(file='data/images/PNG Files/64x32/' + theme + '/20.png')
+    btn_main_chat_img = tk.PhotoImage(file='data/images/PNG Files/64x32/' + theme + '/9.png')
 
-    btn_info_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/' + theme + '/22.png')
+    btn_info_img = tk.PhotoImage(file='data/images/PNG Files/32x16/' + theme + '/22.png')
 
-    btn_voice_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/' + theme + '/105.png')
-    btn_play_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/' + theme + '/109.png')
-    btn_replay_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/' + theme + '/21.png')
+    btn_voice_img = tk.PhotoImage(file='data/images/PNG Files/32x16/' + theme + '/105.png')
+    btn_play_img = tk.PhotoImage(file='data/images/PNG Files/32x16/' + theme + '/109.png')
+    btn_replay_img = tk.PhotoImage(file='data/images/PNG Files/32x16/' + theme + '/21.png')
 
-    btn_media_img = tk.PhotoImage(file='data/images/rast/PNG Files/32x16/' + theme + '/29.png')
+    btn_media_img = tk.PhotoImage(file='data/images/PNG Files/32x16/' + theme + '/29.png')
 
     ChoseFrame(master)
 
