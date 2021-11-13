@@ -50,12 +50,12 @@ class ChoseFrame(ttk.Frame):
         self.btn_settings.pack(side='bottom', expand='false', fill='both', anchor='c')
 
         if len(tabs_frame_settings) <= 0:
-            for i in self.root.grid_slaves():
-                tabs_frame_settings.append(i)
+            [tabs_frame_settings.append(i) for i in self.root.grid_slaves()]
 
         if len(tabs_frame_slaves) <= 0:
-            for i in self.tabs_frame.pack_slaves():
-                tabs_frame_slaves.append(i)
+            [tabs_frame_slaves.append(i) for i in self.tabs_frame.pack_slaves()]
+
+        self.main()
 
     def profile(self):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
@@ -105,7 +105,7 @@ class ProfileFrame(ttk.Frame):
 
         # Profile Frame settings --------------------------------------------------------------------------------------
         self.root = root
-        self.root.title('Music')
+        self.root.title('Profile')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
         self.root.bind('<Configure>', lambda _: self.layout_resize())
@@ -341,7 +341,8 @@ class MusicFrame(ttk.Frame):
         tabs_frame_width = tabs_frame_settings[0].winfo_width()
 
         tabs_frame_settings[0].configure(height=main_frame_height)
-        self.music_notebook.configure(width=(main_frame_width - tabs_frame_width), height=(main_frame_height-30))
+        self.music_notebook.configure(width=(main_frame_width - tabs_frame_width))
+        self.search_frame_notebook.configure(height=(main_frame_height - 60))
 
 
 class SettingsFrame(ttk.Frame):
@@ -350,7 +351,7 @@ class SettingsFrame(ttk.Frame):
 
         # Settings Frame settings --------------------------------------------------------------------------------------
         self.root = root
-        self.root.title('Music')
+        self.root.title('Settings')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
         self.root.bind('<Configure>', lambda _: self.layout_resize())
@@ -385,12 +386,10 @@ if __name__ == '__main__':
     master.configure(bg='#B66254')
     master.iconphoto(False, tk.PhotoImage(file='data/images/fsociety.gif'))
 
-    btn_profile_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/11.png')
-    #btn_main_frame_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/7.png')
+    btn_profile_img = tk.PhotoImage(file='data/images/rast/64x32/profile.png')
     btn_main_frame_img = tk.PhotoImage(file='data/images/rast/64x32/main.png')
-    #btn_music_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/104.png')
     btn_music_img = tk.PhotoImage(file='data/images/rast/64x32/music.png')
-    btn_settings_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/45.png')
+    btn_settings_img = tk.PhotoImage(file='data/images/rast/64x32/settings.png')
 
     btn_news_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/36.png')
     btn_create_img = tk.PhotoImage(file='data/images/rast/PNG Files/64x32/' + theme + '/20.png')
