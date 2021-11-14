@@ -10,6 +10,7 @@ from PIL import ImageTk, Image
 tabs_frame_settings = []
 tabs_frame_slaves = []
 
+half_frame = []
 
 class ReturnButtonAnimation(ttk.Button):
     def __init__(self, master, widget, filename):
@@ -46,7 +47,7 @@ class ReturnButtonAnimation(ttk.Button):
             self.frames.append(ImageTk.PhotoImage(frame))
 
         self.index = 0
-        self.cancel = self.widget.after(self.delay, self.play)
+        self.cancel = None
 
     def play(self):
         self.widget.config(image=self.frames[self.index])  # проигрывание каждого фрейма
@@ -58,6 +59,29 @@ class ReturnButtonAnimation(ttk.Button):
         if self.index == len(self.frames):
             self.widget.after_cancel(self.cancel)
             self.widget.config(image=self.frames[0])
+
+    def play_half(self):
+        self.widget.config(image=self.frames[self.index])
+        if self.index != (len(self.frames) // 2):
+            self.index += 1
+
+        self.cancel = self.widget.after(self.delay, self.play_half)
+
+        if self.index == (len(self.frames) // 2):
+            self.widget.after_cancel(self.cancel)
+            half_frame.append(self.index)
+
+    def play_continue(self):
+        self.widget.config(image=self.frames[half_frame[0]])
+        if half_frame[0] != len(self.frames):
+            half_frame[0] += 1
+
+        self.cancel = self.widget.after(self.delay, self.play_continue)
+
+        if half_frame[0] == len(self.frames):
+            self.widget.after_cancel(self.cancel)
+            self.widget.config(image=self.frames[0])
+            half_frame.pop()
 
 
 class ChoseFrame(ttk.Frame):
@@ -112,7 +136,7 @@ class ChoseFrame(ttk.Frame):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
         [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
-        ReturnButtonAnimation(self.tabs_frame, self.btn_news, 'data/images/GIF/news.gif')
+        ReturnButtonAnimation(self.tabs_frame, self.btn_news, 'data/images/GIF/news.gif').play()
         self.btn_news.configure(state='disabled')
         NewsFrame(self.root)
 
@@ -120,7 +144,7 @@ class ChoseFrame(ttk.Frame):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
         [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
-        ReturnButtonAnimation(self.tabs_frame, self.btn_main, 'data/images/GIF/main.gif')
+        ReturnButtonAnimation(self.tabs_frame, self.btn_main, 'data/images/GIF/main.gif').play()
         self.btn_main.configure(state='disabled')
         MainFrame(self.root)
 
@@ -128,7 +152,7 @@ class ChoseFrame(ttk.Frame):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
         [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
-        ReturnButtonAnimation(self.tabs_frame, self.btn_music, 'data/images/GIF/music.gif')
+        ReturnButtonAnimation(self.tabs_frame, self.btn_music, 'data/images/GIF/music.gif').play()
         self.btn_music.configure(state='disabled')
         MusicFrame(self.root)
 
@@ -136,7 +160,7 @@ class ChoseFrame(ttk.Frame):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
         [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
-        ReturnButtonAnimation(self.tabs_frame, self.btn_settings, 'data/images/GIF/settings.gif')
+        ReturnButtonAnimation(self.tabs_frame, self.btn_settings, 'data/images/GIF/settings.gif').play()
         self.btn_settings.configure(state='disabled')
         SettingsFrame(self.root)
 
@@ -228,13 +252,16 @@ class MainFrame(ttk.Frame):
         self.btn_create.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Main chat Button settings ------------------------------------------------------------------------------------
-        self.btn_main_chat = ttk.Button(self.chats_frame, style='custom.Outline.TButton',
-                                        image=btn_main_chat_img)
+        self.btn_main_chat = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_main_chat_img,
+                                        command=self.main_chat)
         self.btn_main_chat.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
 
         # Dialogue Notebook settings -----------------------------------------------------------------------------------
         self.dialogue_notebook = ttk.Notebook(self.notebook_dialogue_frame)
-        info_frame_notebook = ttk.Frame(self.dialogue_notebook)
+        self.info_frame_notebook = ttk.Button(self.dialogue_notebook,
+                                              style='custom_notebook.TButton',
+                                              text='Посмотреть закрепленное сообщение.',
+                                              command=self.info)
 
         self.voice_button_notebook = ttk.Button(self.dialogue_notebook,
                                                 style='custom_notebook.TButton',
@@ -245,7 +272,7 @@ class MainFrame(ttk.Frame):
                                                 text='Выбрать медиафайл.',
                                                 command=self.open_media_file)
 
-        self.dialogue_notebook.add(info_frame_notebook, image=btn_info_img)
+        self.dialogue_notebook.add(self.info_frame_notebook, image=btn_info_img)
         self.dialogue_notebook.add(self.voice_button_notebook, image=btn_voice_img)
         self.dialogue_notebook.add(self.media_button_notebook, image=btn_media_img)
 
@@ -269,6 +296,8 @@ class MainFrame(ttk.Frame):
 
     def chat_create(self):
         # Button create Frame settings ---------------------------------------------------------------------------------
+        ReturnButtonAnimation(self.chats_frame, self.btn_create, 'data/images/GIF/create.gif').play()
+
         def close_chat_create_frame():
             self.btn_create.configure(state='active')
             btn_create_frame.destroy()
@@ -281,26 +310,45 @@ class MainFrame(ttk.Frame):
 
         btn_create_frame.protocol("WM_DELETE_WINDOW", close_chat_create_frame)
 
+    def main_chat(self):
+        ReturnButtonAnimation(self.chats_frame, self.btn_main_chat, 'data/images/GIF/main_chat.gif').play()
+
+    def info(self):
+        pass
+
     def recording_voice_message(self):
         # Voice Frame settings -----------------------------------------------------------------------------------------
         def close_voice_frame():
             self.voice_button_notebook.configure(state='active')
             voice_frame.destroy()
 
+        def play_half(master, button):
+            ReturnButtonAnimation(master, button, 'data/images/GIF/play.gif').play_half()
+            button.configure(command=lambda: play_continue(master, button))
+
+        def play_continue(master, button):
+            ReturnButtonAnimation(master, button, 'data/images/GIF/play.gif').play_continue()
+            button.configure(command=lambda: play_half(master, button))
+
+        def replay(master, button):
+            ReturnButtonAnimation(master, button, 'data/images/GIF/replay.gif').play()
+
         self.voice_button_notebook.configure(state='disabled')
         voice_frame = tk.Toplevel()
         voice_frame.title('Voice message')
-        voice_frame.geometry('500x60')
+        voice_frame.geometry('560x68')
         voice_frame.resizable(False, False)
 
-        btn_play_voice = ttk.Button(voice_frame, style='custom.secondary.Outline.TButton', image=btn_play_img)
-        btn_play_voice.grid(row=0, column=0, padx=5, pady=15)
+        btn_play_voice = ttk.Button(voice_frame, style='custom.secondary.Outline.TButton', image=btn_play_img,
+                                    command=lambda: play_half(voice_frame, btn_play_voice))
+        btn_play_voice.grid(row=0, column=0, padx=5, pady=5)
 
-        btn_replay_voice = ttk.Button(voice_frame, style='custom.secondary.Outline.TButton', image=btn_replay_img)
-        btn_replay_voice.grid(row=0, column=1, padx=5, pady=15)
+        btn_replay_voice = ttk.Button(voice_frame, style='custom.secondary.Outline.TButton', image=btn_replay_img,
+                                      command=lambda: replay(voice_frame, btn_replay_voice))
+        btn_replay_voice.grid(row=0, column=1, padx=5, pady=5)
 
         scale_voice = ttk.Scale(voice_frame, length=350, from_=0, to=100, value=0, orient='horizontal')
-        scale_voice.grid(row=0, column=2, columnspan=3, padx=10, pady=10)
+        scale_voice.grid(row=0, column=2, columnspan=3, padx=10, pady=5)
 
         voice_frame.protocol("WM_DELETE_WINDOW", close_voice_frame)
 
@@ -430,13 +478,13 @@ class SettingsFrame(ttk.Frame):
 
 
 if __name__ == '__main__':
-    theme = 'fiery-sunset'
-    style = Style(theme='fiery-sunset', themes_file='data/themes/json/ttkbootstrap_themes.json')
+    theme = 'default'
+    style = Style(theme='winter-melancholy', themes_file='data/themes/json/ttkbootstrap_themes.json')
 
     master = style.master
     master.geometry('750x550')
 
-    master.configure(bg='#B66254')
+    master.configure(bg='#707070')
     master.iconphoto(False, tk.PhotoImage(file='data/images/fsociety.gif'))
 
     btn_news_img = tk.PhotoImage(file='data/images/GIF/news.gif')
@@ -444,16 +492,16 @@ if __name__ == '__main__':
     btn_music_img = tk.PhotoImage(file='data/images/GIF/music.gif')
     btn_settings_img = tk.PhotoImage(file='data/images/GIF/settings.gif')
 
-    btn_create_img = tk.PhotoImage(file='data/images/PNG Files/64x32/' + theme + '/20.png')
-    btn_main_chat_img = tk.PhotoImage(file='data/images/PNG Files/64x32/' + theme + '/9.png')
+    btn_create_img = tk.PhotoImage(file='data/images/GIF/create.gif')
+    btn_main_chat_img = tk.PhotoImage(file='data/images/GIF/main_chat.gif')
 
-    btn_info_img = tk.PhotoImage(file='data/images/PNG Files/32x16/' + theme + '/22.png')
+    btn_info_img = tk.PhotoImage(file='data/images/PNG/32x16/info.png')
 
-    btn_voice_img = tk.PhotoImage(file='data/images/PNG Files/32x16/' + theme + '/105.png')
-    btn_play_img = tk.PhotoImage(file='data/images/PNG Files/32x16/' + theme + '/109.png')
-    btn_replay_img = tk.PhotoImage(file='data/images/PNG Files/32x16/' + theme + '/21.png')
+    btn_voice_img = tk.PhotoImage(file='data/images/PNG/32x16/voice.png')
+    btn_play_img = tk.PhotoImage(file='data/images/GIF/play.gif')
+    btn_replay_img = tk.PhotoImage(file='data/images/GIF/replay.gif')
 
-    btn_media_img = tk.PhotoImage(file='data/images/PNG Files/32x16/' + theme + '/29.png')
+    btn_media_img = tk.PhotoImage(file='data/images/PNG/32x16/media.png')
 
     ChoseFrame(master)
 

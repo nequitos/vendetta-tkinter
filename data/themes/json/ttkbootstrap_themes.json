@@ -39,6 +39,25 @@
 				"inputfg": "#333333",
 				"inputbg": "#adb5bd"
 			}
+		},
+		{
+			"name": "winter-melancholy",
+			"font": "Helvetica 10",
+			"type": "dark",
+			"colors": {
+				"primary": "#707070",
+				"secondary": "#3784a6",
+				"success": "#47d6ab",
+				"info": "#5347d6",
+				"warning": "#d68c47",
+				"danger": "#d64747",
+				"bg": "#383838",
+				"fg": "#ffffff",
+				"selectbg": "#444444",
+				"selectfg": "#ffffff",
+				"border": "#222222",
+				"inputfg": "#333333",
+				"inputbg": "#adb5bd"}
 		}
 	]
 }
