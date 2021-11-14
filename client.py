@@ -11,11 +11,12 @@ tabs_frame_settings = []
 tabs_frame_slaves = []
 
 
-class ReturnAnimationWidget:
-    def __init__(self, widget, filename):
+class ReturnButtonAnimation(ttk.Button):
+    def __init__(self, master, widget, filename):
+        super(ReturnButtonAnimation, self).__init__(master)
         self.widget = widget
-        filename = filename
-        image = Image.open(filename)
+        self.filename = filename
+        image = Image.open(self.filename)
         cadres = []
 
         try:
@@ -26,10 +27,12 @@ class ReturnAnimationWidget:
             # print(ex)
             pass  # we're done
 
-        try:
-            self.delay = image.info['duration']  # возврат задержки
-        except KeyError:
-            self.delay = 100
+        # try:
+        #     self.delay = image.info['duration']  # возврат задержки
+        # except KeyError:
+        #     self.delay = 100
+
+        self.delay = 15
 
         first = cadres[0].convert('RGBA')  # конвертирование в RGBA
         self.frames = [ImageTk.PhotoImage(first)]
@@ -50,12 +53,11 @@ class ReturnAnimationWidget:
         if self.index != len(self.frames):
             self.index += 1
 
-        print(len(self.frames), self.index)
         self.cancel = self.widget.after(self.delay, self.play)
 
         if self.index == len(self.frames):
             self.widget.after_cancel(self.cancel)
-            #self.widget.configure(image=self.frames[0])
+            self.widget.config(image=self.frames[0])
 
 
 class ChoseFrame(ttk.Frame):
@@ -79,9 +81,9 @@ class ChoseFrame(ttk.Frame):
         self.tabs_frame.grid(row=0, column=0)
 
         # Profile Button settings --------------------------------------------------------------------------------------
-        self.btn_profile = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_profile_img,
-                                      command=self.profile)
-        self.btn_profile.pack(side='top', expand='false', fill='both', anchor='c')
+        self.btn_news = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_news_img,
+                                      command=self.news)
+        self.btn_news.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Main Button settings -----------------------------------------------------------------------------------------
         self.btn_main = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_main_frame_img,
@@ -106,17 +108,19 @@ class ChoseFrame(ttk.Frame):
 
         self.main()
 
-    def profile(self):
+    def news(self):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
         [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
-        self.btn_profile.configure(state='disabled')
-        ProfileFrame(self.root)
+        ReturnButtonAnimation(self.tabs_frame, self.btn_news, 'data/images/GIF/news.gif')
+        self.btn_news.configure(state='disabled')
+        NewsFrame(self.root)
 
     def main(self):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
         [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
+        ReturnButtonAnimation(self.tabs_frame, self.btn_main, 'data/images/GIF/main.gif')
         self.btn_main.configure(state='disabled')
         MainFrame(self.root)
 
@@ -124,6 +128,7 @@ class ChoseFrame(ttk.Frame):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
         [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
+        ReturnButtonAnimation(self.tabs_frame, self.btn_music, 'data/images/GIF/music.gif')
         self.btn_music.configure(state='disabled')
         MusicFrame(self.root)
 
@@ -131,7 +136,7 @@ class ChoseFrame(ttk.Frame):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
         [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
 
-        ReturnAnimationWidget(self.btn_settings, 'data/images/GIF/settings_2.gif')
+        ReturnButtonAnimation(self.tabs_frame, self.btn_settings, 'data/images/GIF/settings.gif')
         self.btn_settings.configure(state='disabled')
         SettingsFrame(self.root)
 
@@ -149,13 +154,13 @@ class ChoseFrame(ttk.Frame):
         self.tabs_frame.configure(height=main_frame_height)
 
 
-class ProfileFrame(ttk.Frame):
+class NewsFrame(ttk.Frame):
     def __init__(self, root, **kwargs):
-        super(ProfileFrame, self).__init__(root, **kwargs)
+        super(NewsFrame, self).__init__(root, **kwargs)
 
         # Profile Frame settings --------------------------------------------------------------------------------------
         self.root = root
-        self.root.title('Vendetta Profile')
+        self.root.title('Vendetta News')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
         self.root.bind('<Configure>', lambda _: self.layout_resize())
@@ -217,19 +222,15 @@ class MainFrame(ttk.Frame):
         self.text_dialogue_frame = ttk.Frame(self.dialogue_frame)
         self.text_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
 
-        # News Button settings -----------------------------------------------------------------------------------------
-        self.btn_news = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_news_img)
-        self.btn_news.pack(side='top', expand='false', fill='both', anchor='c')
-
         # Create Button settings ---------------------------------------------------------------------------------------
         self.btn_create = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_create_img,
                                      command=self.chat_create)
-        self.btn_create.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
+        self.btn_create.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Main chat Button settings ------------------------------------------------------------------------------------
         self.btn_main_chat = ttk.Button(self.chats_frame, style='custom.Outline.TButton',
                                         image=btn_main_chat_img)
-        self.btn_main_chat.pack(side='top', expand='false', fill='both', anchor='c')
+        self.btn_main_chat.pack(side='top', expand='false', fill='both', anchor='c', pady=5)
 
         # Dialogue Notebook settings -----------------------------------------------------------------------------------
         self.dialogue_notebook = ttk.Notebook(self.notebook_dialogue_frame)
@@ -438,12 +439,11 @@ if __name__ == '__main__':
     master.configure(bg='#B66254')
     master.iconphoto(False, tk.PhotoImage(file='data/images/fsociety.gif'))
 
-    btn_profile_img = tk.PhotoImage(file='data/images/PNG/64x32/profile.png')
-    btn_main_frame_img = tk.PhotoImage(file='data/images/PNG/64x32/main.png')
-    btn_music_img = tk.PhotoImage(file='data/images/PNG/64x32/music.png')
-    btn_settings_img = tk.PhotoImage(file='data/images/GIF/settings_2.gif')
+    btn_news_img = tk.PhotoImage(file='data/images/GIF/news.gif')
+    btn_main_frame_img = tk.PhotoImage(file='data/images/GIF/main.gif')
+    btn_music_img = tk.PhotoImage(file='data/images/GIF/music.gif')
+    btn_settings_img = tk.PhotoImage(file='data/images/GIF/settings.gif')
 
-    btn_news_img = tk.PhotoImage(file='data/images/PNG Files/64x32/' + theme + '/36.png')
     btn_create_img = tk.PhotoImage(file='data/images/PNG Files/64x32/' + theme + '/20.png')
     btn_main_chat_img = tk.PhotoImage(file='data/images/PNG Files/64x32/' + theme + '/9.png')
 
