@@ -1,36 +1,30 @@
-import tkinter
+import pyaudio
+import wave
+import sys
 
 
-class FancyListbox(tkinter.Listbox):
+def play():
+    chunk = 1024 # 2014kb
+    wf = wave.open(r"data/music/test1.wav", 'rb')
+    p = pyaudio.PyAudio()
+    stream = p.open(format=p.get_format_from_width(wf.getsampwidth()), channels=wf.getnchannels(),
+                    rate=wf.getframerate(), output=True)
 
-    def __init__(self, parent, *args, **kwargs):
-        tkinter.Listbox.__init__(self, parent, *args, **kwargs)
+    data = wf.readframes(chunk)  # читать данные
+    print(data)
 
-        self.popup_menu = tkinter.Menu(self, tearoff=0)
-        self.popup_menu.add_command(label="Delete",
-                                    command=self.delete_selected)
-        self.popup_menu.add_command(label="Select All",
-                                    command=self.select_all)
+    while True:
+        data = wf.readframes(chunk)
+        if data == "":
+            break
+        stream.write(data)
 
-        self.bind("<Button-3>", self.popup) # Button-2 on Aqua
+    stream.stop_stream()  # Остановить поток данных
 
-    def popup(self, event):
-        try:
-            self.popup_menu.tk_popup(event.x_root, event.y_root, 0)
-        finally:
-            self.popup_menu.grab_release()
+    stream.close()
+    p.terminate()  # Закрыть PyAudio
+    print('Конец функции воспроизведения!')
 
-    def delete_selected(self):
-        for i in self.curselection()[::-1]:
-            self.delete(i)
-
-    def select_all(self):
-        self.selection_set(0, 'end')
-
-
-root = tkinter.Tk()
-flb = FancyListbox(root, selectmode='multiple')
-for n in range(10):
-    flb.insert('end', n)
-flb.pack()
-root.mainloop()
+if __name__ == '__main__':
+    audio_file = 'data/music/portugal-the-man-feel-it-still.mp3'  # Укажите файл записи
+    play()  # Воспроизвести файл записи

@@ -12,6 +12,7 @@ tabs_frame_slaves = []
 
 half_frame = []
 
+
 class ReturnButtonAnimation(ttk.Button):
     def __init__(self, master, widget, filename):
         super(ReturnButtonAnimation, self).__init__(master)
@@ -93,7 +94,6 @@ class ChoseFrame(ttk.Frame):
         self.root.title('Vendetta Alpha')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
-        self.root.bind('<Configure>', lambda _: self.layout_resize())
         self.root.bind("<F11>", self.toggle_full_screen)
         self.root.bind("<Escape>", self.end_full_screen)
 
@@ -101,12 +101,12 @@ class ChoseFrame(ttk.Frame):
         style.configure('custom.Outline.TButton', padding=0, borderwidth=0, anchor='c')
 
         # Tabs Frame settings ------------------------------------------------------------------------------------------
-        self.tabs_frame = ttk.Frame(width=66, height=550)
-        self.tabs_frame.grid(row=0, column=0)
+        self.tabs_frame = ttk.Frame(width=64, height=550)
+        self.tabs_frame.pack(side='left', expand='false', fill='both', anchor='c')
 
         # Profile Button settings --------------------------------------------------------------------------------------
         self.btn_news = ttk.Button(self.tabs_frame, style='custom.Outline.TButton', image=btn_news_img,
-                                      command=self.news)
+                                   command=self.news)
         self.btn_news.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Main Button settings -----------------------------------------------------------------------------------------
@@ -134,7 +134,7 @@ class ChoseFrame(ttk.Frame):
 
     def news(self):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
-        [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
+        [i.destroy() for i in self.root.pack_slaves() if str(i) != '.!frame']
 
         ReturnButtonAnimation(self.tabs_frame, self.btn_news, 'data/images/GIF/news.gif').play()
         self.btn_news.configure(state='disabled')
@@ -142,7 +142,7 @@ class ChoseFrame(ttk.Frame):
 
     def main(self):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
-        [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
+        [i.destroy() for i in self.root.pack_slaves() if str(i) != '.!frame']
 
         ReturnButtonAnimation(self.tabs_frame, self.btn_main, 'data/images/GIF/main.gif').play()
         self.btn_main.configure(state='disabled')
@@ -150,7 +150,7 @@ class ChoseFrame(ttk.Frame):
 
     def music(self):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
-        [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
+        [i.destroy() for i in self.root.pack_slaves() if str(i) != '.!frame']
 
         ReturnButtonAnimation(self.tabs_frame, self.btn_music, 'data/images/GIF/music.gif').play()
         self.btn_music.configure(state='disabled')
@@ -158,7 +158,7 @@ class ChoseFrame(ttk.Frame):
 
     def settings(self):
         [i.configure(state='normal') for i in self.tabs_frame.pack_slaves() if str(i['state']) == 'disabled']
-        [i.destroy() for i in self.root.grid_slaves() if str(i) != '.!frame']
+        [i.destroy() for i in self.root.pack_slaves() if str(i) != '.!frame']
 
         ReturnButtonAnimation(self.tabs_frame, self.btn_settings, 'data/images/GIF/settings.gif').play()
         self.btn_settings.configure(state='disabled')
@@ -172,11 +172,6 @@ class ChoseFrame(ttk.Frame):
         self.full_screen_state = False
         self.root.attributes("-fullscreen", self.full_screen_state)
 
-    def layout_resize(self):
-        main_frame_height = self.root.winfo_height()
-
-        self.tabs_frame.configure(height=main_frame_height)
-
 
 class NewsFrame(ttk.Frame):
     def __init__(self, root, **kwargs):
@@ -187,7 +182,6 @@ class NewsFrame(ttk.Frame):
         self.root.title('Vendetta News')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
-        self.root.bind('<Configure>', lambda _: self.layout_resize())
         self.root.bind("<F11>", self.toggle_full_screen)
         self.root.bind("<Escape>", self.end_full_screen)
 
@@ -202,11 +196,6 @@ class NewsFrame(ttk.Frame):
         self.full_screen_state = False
         self.root.attributes("-fullscreen", self.full_screen_state)
 
-    def layout_resize(self):
-        main_frame_height = self.root.winfo_height()
-
-        tabs_frame_settings[0].configure(height=main_frame_height)
-
 
 class MainFrame(ttk.Frame):
     def __init__(self, root, **kwargs):
@@ -217,7 +206,6 @@ class MainFrame(ttk.Frame):
         self.root.title('Vendetta Alpha')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
-        self.root.bind('<Configure>', lambda _: self.layout_resize())
         self.root.bind("<F11>", self.toggle_full_screen)
         self.root.bind("<Escape>", self.end_full_screen)
 
@@ -227,24 +215,24 @@ class MainFrame(ttk.Frame):
         style.configure('custom.Vertical.TScrollbar')
 
         # Chats Frame settings -----------------------------------------------------------------------------------------
-        self.chats_frame = ttk.Frame(width=130, height=550)
-        self.chats_frame.grid(row=0, column=1, columnspan=2, padx=5)
+        self.chats_frame = ttk.Frame(width=128, height=550)
+        self.chats_frame.pack(side='left', expand='false', fill='both', anchor='c', padx=5)
 
         # Dialogue Frame settings --------------------------------------------------------------------------------------
         self.dialogue_frame = ttk.Frame(width=554, height=550)
-        self.dialogue_frame.grid(row=0, column=3, columnspan=5)
+        self.dialogue_frame.pack(side='left', expand='true', fill='both', anchor='c')
 
         # Notebook Dialogue Frame settings -----------------------------------------------------------------------------
         self.notebook_dialogue_frame = ttk.Frame(self.dialogue_frame)
-        self.notebook_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
+        self.notebook_dialogue_frame.pack(side='top', expand='true', fill='both', anchor='c')
 
         # Canvas Dialogue Frame settings -------------------------------------------------------------------------------
         self.canvas_dialogue_frame = ttk.Frame(self.dialogue_frame)
-        self.canvas_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
+        self.canvas_dialogue_frame.pack(side='top', expand='true', fill='both', anchor='c')
 
         # Text Dialogue Frame settings ---------------------------------------------------------------------------------
         self.text_dialogue_frame = ttk.Frame(self.dialogue_frame)
-        self.text_dialogue_frame.pack(side='top', expand='false', fill='both', anchor='c')
+        self.text_dialogue_frame.pack(side='top', expand='true', fill='both', anchor='c')
 
         # Create Button settings ---------------------------------------------------------------------------------------
         self.btn_create = ttk.Button(self.chats_frame, style='custom.Outline.TButton', image=btn_create_img,
@@ -280,19 +268,20 @@ class MainFrame(ttk.Frame):
 
         # Dialogue Canvas settings -------------------------------------------------------------------------------------
         self.dialogue_canvas = tk.Canvas(self.canvas_dialogue_frame)
-        self.dialogue_canvas.pack(side='left', expand='false', fill='both', anchor='c')
+        self.dialogue_canvas.pack(side='left', expand='true', fill='both', anchor='c')
 
         # Dialogue Text settings ---------------------------------------------------------------------------------------
-        self.dialogue_text = tk.Text(self.text_dialogue_frame, bg='#5C5C5C', fg='white', insertbackground='white',
-                                     height=5)
-        self.dialogue_text.pack(side='left', expand='false', fill='both', anchor='c')
+        self.dialogue_text = tk.Text(self.text_dialogue_frame, bg='#5C5C5C', fg='white',
+                                     insertbackground='white')
+        self.dialogue_text.pack(side='top', expand='false', fill='both', anchor='c')
 
         # Dialogue Canvas Scrollbar settings ---------------------------------------------------------------------------
         self.scrollbar_dialogue_canvas = ttk.Scrollbar(self.canvas_dialogue_frame, style='custom.Vertical.TScrollbar',
                                                        orient='vertical',
                                                        command=self.dialogue_canvas.yview)
         self.dialogue_canvas.configure(yscrollcommand=self.scrollbar_dialogue_canvas.set)
-        self.scrollbar_dialogue_canvas.pack(side='right', expand='true', fill='y', anchor='c')
+        self.scrollbar_dialogue_canvas.pack(side='right', expand='false', fill='y', anchor='c')
+
 
     def chat_create(self):
         # Button create Frame settings ---------------------------------------------------------------------------------
@@ -364,30 +353,6 @@ class MainFrame(ttk.Frame):
         self.full_screen_state = False
         self.root.attributes("-fullscreen", self.full_screen_state)
 
-    def layout_resize(self):
-        main_frame_height = self.root.winfo_height()
-        dialogue_frame_width = (self.root.winfo_width() - tabs_frame_settings[0].winfo_width() -
-                                self.chats_frame.winfo_width())
-
-        tabs_frame_settings[0].configure(height=main_frame_height)
-        self.chats_frame.configure(height=main_frame_height)
-        self.dialogue_frame.configure(width=dialogue_frame_width, height=main_frame_height)
-
-        try:
-            self.dialogue_canvas.configure(width=(dialogue_frame_width - 35),
-                                           height=(main_frame_height - 43 - self.dialogue_notebook.winfo_height()))
-        except Exception as ex:
-            #print("Виджет 'tkinter Canvas' несовеместим для использования с ttk.\n" + str(ex))
-            pass
-
-        try:
-            self.dialogue_text.configure(width=dialogue_frame_width)
-        except Exception as ex:
-            #print("Виджет 'tkinter Text' несовеместим для использования с ttk.\n" + str(ex))
-            pass
-
-        self.dialogue_notebook.configure(width=dialogue_frame_width)
-
 
 class MusicFrame(ttk.Frame):
     def __init__(self, root, **kwargs):
@@ -398,7 +363,6 @@ class MusicFrame(ttk.Frame):
         self.root.title('Vendetta Music')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
-        self.root.bind('<Configure>', lambda _: self.layout_resize())
         self.root.bind("<F11>", self.toggle_full_screen)
         self.root.bind("<Escape>", self.end_full_screen)
 
@@ -407,7 +371,7 @@ class MusicFrame(ttk.Frame):
 
         # Notebook Frame settings --------------------------------------------------------------------------------------
         self.music_notebook_frame = ttk.Frame(style='custom.TFrame')
-        self.music_notebook_frame.grid(row=0, column=1, columnspan=2, padx=5)
+        self.music_notebook_frame.pack(side='left', expand='true', fill='both', anchor='c')
 
         # Music Notebook settings --------------------------------------------------------------------------------------
         self.music_notebook = ttk.Notebook(self.music_notebook_frame)
@@ -438,14 +402,6 @@ class MusicFrame(ttk.Frame):
         self.full_screen_state = False
         self.root.attributes("-fullscreen", self.full_screen_state)
 
-    def layout_resize(self):
-        main_frame_width = self.root.winfo_width()
-        main_frame_height = self.root.winfo_height()
-        tabs_frame_width = tabs_frame_settings[0].winfo_width()
-
-        tabs_frame_settings[0].configure(height=main_frame_height)
-        self.music_notebook.configure(width=(main_frame_width - tabs_frame_width), height=(main_frame_height - 31))
-
 
 class SettingsFrame(ttk.Frame):
     def __init__(self, root, **kwargs):
@@ -456,7 +412,6 @@ class SettingsFrame(ttk.Frame):
         self.root.title('Vendetta Settings')
         self.root.minsize(width=697, height=450)
         self.full_screen_state = False
-        self.root.bind('<Configure>', lambda _: self.layout_resize())
         self.root.bind("<F11>", self.toggle_full_screen)
         self.root.bind("<Escape>", self.end_full_screen)
 
@@ -470,11 +425,6 @@ class SettingsFrame(ttk.Frame):
     def end_full_screen(self, event):
         self.full_screen_state = False
         self.root.attributes("-fullscreen", self.full_screen_state)
-
-    def layout_resize(self):
-        main_frame_height = self.root.winfo_height()
-
-        tabs_frame_settings[0].configure(height=main_frame_height)
 
 
 if __name__ == '__main__':
