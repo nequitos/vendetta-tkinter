@@ -1,9 +1,16 @@
 
 from PIL import ImageTk, Image
 from tkinter import ttk
-
+import tkinter as tk
 
 half_frame = []
+
+# def gen_init(gen):
+#     def initial(*args, **kwargs):
+#         g = gen(*args, **kwargs)
+#         next(g)
+#         return g
+#     return initial
 
 
 class ReturnButtonAnimation(ttk.Button):
@@ -76,3 +83,17 @@ class ReturnButtonAnimation(ttk.Button):
             self.widget.after_cancel(self.cancel)
             self.widget.config(image=self.frames[0])
             half_frame.pop()
+
+
+if __name__ == '__main__':
+    root = tk.Tk()
+    root.geometry('600x500')
+    btn_img = tk.PhotoImage(file='data/images/GIF/play.gif')
+
+    def play_btn(master):
+        ReturnButtonAnimation(master=master, widget=btn, filename='data/images/GIF/play.gif').play()
+
+    btn = ttk.Button(image=btn_img, command=lambda: play_btn(master=root))
+    btn.pack(side='top')
+
+    root.mainloop()

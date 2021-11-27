@@ -25,6 +25,7 @@ def play():
     p.terminate()  # Закрыть PyAudio
     print('Конец функции воспроизведения!')
 
+
 if __name__ == '__main__':
     audio_file = 'data/music/portugal-the-man-feel-it-still.mp3'  # Укажите файл записи
     play()  # Воспроизвести файл записи
