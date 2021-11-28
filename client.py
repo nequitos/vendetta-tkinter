@@ -1,5 +1,6 @@
 
 from socket import socket
+import threading
 import aiofiles
 import asyncio
 
@@ -16,7 +17,10 @@ class BasicDispatchClient(socket):
 
     @staticmethod
     def get_structure(*args, **kwargs):
-        structure = {}
+        structure = {
+            'message': [],
+            'file': []
+        }
         return pickle.dumps(*args, **kwargs)
 
     def set_up(self):
@@ -25,12 +29,12 @@ class BasicDispatchClient(socket):
             os.mkdir('temp/')
 
         self.connect(
-            ('localhost', 65044)
+            ('localhost', 65045)
         )
         self.setblocking(False)
 
     def start_client(self):
-        self.loop.run_until_complete(self.get_tasks())
+        threading.Thread(self.loop.run_until_complete(self.get_tasks())).start()
 
     async def listen_server(self):
         while True:
@@ -39,27 +43,10 @@ class BasicDispatchClient(socket):
 
     async def send_data(self, message=None, chat_name=None):
         while True:
-
-            async with aiofiles.open('temp/message_send_' + chat_name + '.txt', 'w', encoding='utf-8') as message_fl:
-                await message_fl.write(message)
-
-            async with aiofiles.open('temp/message_send_' + chat_name + '.txt', 'rb') as message_fl:
-                while True:
-                    data = await message_fl.read(1024)
-
-                    if data == b'':
-                        break
-
-                    await self.loop.sock_sendall(self, self.get_structure(data))
-
-                os.remove('temp/messages_send_' + chat_name + '.txt')
+            await self.loop.sock_sendall(self, message.encode('utf-8'))
 
     async def get_tasks(self):
         listen_server_task = self.loop.create_task(self.listen_server())
         send_server_task = self.loop.create_task(self.send_data())
 
         await asyncio.gather(listen_server_task, send_server_task)
-
-
-if __name__ == '__main__':
-    client = BasicDispatchClient()

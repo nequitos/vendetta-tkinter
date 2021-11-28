@@ -5,6 +5,7 @@ import tkinter as tk
 
 from api import *
 
+import asyncio
 import client
 
 tabs_frame_settings = []
@@ -208,6 +209,10 @@ class MainFrame(ttk.Frame):
         self.dialogue_canvas.configure(yscrollcommand=self.scrollbar_dialogue_canvas.set)
         self.scrollbar_dialogue_canvas.pack(side='right', expand='false', fill='y', anchor='c')
 
+    def send_message(self):
+        message = self.dialogue_text.get(tk.END, 0)
+        print(message)
+
     def chat_create(self):
         # Button create Frame settings ---------------------------------------------------------------------------------
         ReturnButtonAnimation(self.chats_frame, self.btn_create, 'data/images/GIF/create.gif').play()
@@ -379,5 +384,12 @@ if __name__ == '__main__':
     btn_media_img = tk.PhotoImage(file='data/images/PNG/32x16/media.png')
 
     ChoseFrame(master)
-
     master.mainloop()
+
+    # try:
+    #     asyncio.run(client.BasicDispatchClient().start_client())
+    #     ChoseFrame(master)
+    #     master.mainloop()
+    #
+    # except Exception as ex:
+    #     print(ex)
