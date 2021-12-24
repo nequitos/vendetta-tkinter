@@ -9,6 +9,7 @@ from pathlib import Path
 class ChatsFrame(ttk.Frame):
     def __init__(self, parent, **kwargs):
         super(ChatsFrame, self).__init__(parent, **kwargs)
+        self.bind('<Configure>', self._set_scrollbar)
 
         self.style = ttk.Style()
         self.style.configure('secondary.TButtons', borderwidth=0)
@@ -38,7 +39,6 @@ class ChatsFrame(ttk.Frame):
 
         self.interior = interior = ttk.Frame(canvas)
         self.interior_id = canvas.create_window((0, 0), window=interior, anchor=NW)
-        self.interior.bind('<Configure>', self._set_scrollbar)
 
         # ----- Buttons
         self.create_btn = ttk.Button(interior, bootstyle=SECONDARY,
