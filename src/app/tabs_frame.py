@@ -17,6 +17,8 @@ class TabsFrame(ttk.Frame):
 
         self.parent = parent
 
+        self.chats_frame = ChatsFrame(self.parent)
+
         # ----- Images
         image_files = {
             'news': 'news.png',
@@ -69,33 +71,33 @@ class TabsFrame(ttk.Frame):
 
     def _news_button_pressing(self):
         [i.state(['!pressed']) for i in self.pack_slaves() if 'pressed' in i.state()]
-        [i.destroy() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
+        [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
 
         self.news_btn.state(['pressed'])
 
     def _profile_button_pressing(self):
         [i.state(['!pressed']) for i in self.pack_slaves() if 'pressed' in i.state()]
-        [i.destroy() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
+        [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
 
         self.profile_btn.state(['pressed'])
 
     def _chats_button_pressing(self):
         [i.state(['!pressed']) for i in self.pack_slaves() if 'pressed' in i.state()]
-        [i.destroy() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
+        [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
 
         self.chats_btn.state(['pressed'])
 
-        ChatsFrame(self.parent).pack(side=LEFT, expand=FALSE, fill=BOTH, padx=5)
+        self.chats_frame.pack(side=LEFT, expand=FALSE, fill=BOTH, padx=5)
 
     def _music_button_pressing(self):
         [i.state(['!pressed']) for i in self.pack_slaves() if 'pressed' in i.state()]
-        [i.destroy() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
+        [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
 
         self.music_btn.state(['pressed'])
 
     def _settings_button_pressing(self):
         [i.state(['!pressed']) for i in self.pack_slaves() if 'pressed' in i.state()]
-        [i.destroy() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
+        [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
 
         self.settings_btn.state(['pressed'])
 

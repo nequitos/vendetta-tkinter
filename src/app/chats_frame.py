@@ -68,13 +68,13 @@ class ChatsFrame(ttk.Frame):
 
     def _create_button_pressing(self):
         [i.state(['!pressed']) for i in self.interior.pack_slaves() if 'pressed' in i.state()]
-        [i.destroy() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe' and str(i) != '.!chatsframe']
+        [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe' and str(i) != '.!chatsframe']
 
         self.create_btn.state(['pressed'])
 
     def _main_button_pressing(self):
         [i.state(['!pressed']) for i in self.interior.pack_slaves() if 'pressed' in i.state()]
-        [i.destroy() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe' and str(i) != '.!chatsframe']
+        [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe' and str(i) != '.!chatsframe']
 
         self.main_btn.state(['pressed'])
 
