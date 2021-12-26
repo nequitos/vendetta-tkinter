@@ -1,9 +1,8 @@
 
-from ttkbootstrap.constants import *
-import ttkbootstrap as ttk
 
 from chats_frame import ChatsFrame
 
+from utils import *
 from pathlib import Path
 
 

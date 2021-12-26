@@ -1,5 +1,3 @@
-
-
 from ttkbootstrap.constants import *
 import ttkbootstrap as ttk
 
