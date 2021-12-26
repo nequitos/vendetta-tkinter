@@ -3,18 +3,21 @@
 from ttkbootstrap.constants import *
 import ttkbootstrap as ttk
 
+from dialog_frame import DialogFrame
+
 from pathlib import Path
 
 
 class ChatsFrame(ttk.Frame):
     def __init__(self, parent, **kwargs):
         super(ChatsFrame, self).__init__(parent, **kwargs)
-        self.bind('<Configure>', self._set_scrollbar)
+        self.configure(padding=0)
 
         self.style = ttk.Style()
         self.style.configure('secondary.TButtons', borderwidth=0)
 
         self.parent = parent
+        self.dialogue_frame = DialogFrame(parent)
 
         # ----- Images
         image_files = {
@@ -27,8 +30,7 @@ class ChatsFrame(ttk.Frame):
             _path = img_path / v
             self.photo_images.append(ttk.PhotoImage(name=k, file=_path))
 
-        self.scrollbar = scrollbar = ttk.Scrollbar(self,
-                                       orient=VERTICAL)
+        self.scrollbar = scrollbar = ttk.Scrollbar(self, orient=VERTICAL)
 
         self.canvas = canvas = ttk.Canvas(self,
                                           width=128,
@@ -39,24 +41,24 @@ class ChatsFrame(ttk.Frame):
 
         self.interior = interior = ttk.Frame(canvas)
         self.interior_id = canvas.create_window((0, 0), window=interior, anchor=NW)
+        self.interior.bind('<Configure>', self._set_scrollbar)
 
         # ----- Buttons
         self.create_btn = ttk.Button(interior, bootstyle=SECONDARY,
                                      image='create',
                                      padding=0,
                                      takefocus=0,
-                                     command=self._create_button_pressing)
+                                     command=self.create_button_pressing)
         self.create_btn.pack(side=TOP)
 
         self.main_btn = ttk.Button(interior, bootstyle=SECONDARY,
                                    image='main',
                                    padding=0,
                                    takefocus=0,
-                                   command=self._main_button_pressing)
+                                   command=self.main_button_pressing)
         self.main_btn.pack(side=TOP)
 
-        self.update_idletasks()
-        self._main_button_pressing()
+        self.interior.update_idletasks()
 
     def _set_scrollbar(self, event):
         if self.interior.winfo_height() > self.winfo_height():
@@ -66,17 +68,19 @@ class ChatsFrame(ttk.Frame):
             self.canvas.config(scrollregion=(0, 0, 0, 0))
             self.scrollbar.pack_forget()
 
-    def _create_button_pressing(self):
+    def create_button_pressing(self):
         [i.state(['!pressed']) for i in self.interior.pack_slaves() if 'pressed' in i.state()]
         [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe' and str(i) != '.!chatsframe']
 
         self.create_btn.state(['pressed'])
 
-    def _main_button_pressing(self):
+    def main_button_pressing(self):
         [i.state(['!pressed']) for i in self.interior.pack_slaves() if 'pressed' in i.state()]
         [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe' and str(i) != '.!chatsframe']
 
         self.main_btn.state(['pressed'])
+
+        self.dialogue_frame.pack(side=LEFT, expand=TRUE, fill=BOTH, anchor=CENTER)
 
 
 if __name__ == '__main__':

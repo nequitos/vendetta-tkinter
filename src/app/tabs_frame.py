@@ -10,13 +10,12 @@ from pathlib import Path
 class TabsFrame(ttk.Frame):
     def __init__(self, parent, **kwargs):
         super(TabsFrame, self).__init__(parent, **kwargs)
-        self.configure(padding=1)
+        self.configure(padding=0)
 
         self.style = ttk.Style()
         self.style.configure('secondary.TButton', borderwidth=0)
 
         self.parent = parent
-
         self.chats_frame = ChatsFrame(self.parent)
 
         # ----- Images
@@ -38,50 +37,50 @@ class TabsFrame(ttk.Frame):
                                    image='news',
                                    padding=0,
                                    takefocus=0,
-                                   command=self._news_button_pressing)
+                                   command=self.news_button_pressing)
         self.news_btn.pack(side=TOP)
 
         self.profile_btn = ttk.Button(self, bootstyle=SECONDARY,
                                       image='profile',
                                       padding=0,
                                       takefocus=0,
-                                      command=self._profile_button_pressing)
+                                      command=self.profile_button_pressing)
         self.profile_btn.pack(side=TOP, pady=5)
 
         self.chats_btn = ttk.Button(self, bootstyle=SECONDARY,
                                     image='chats',
                                     padding=0,
                                     takefocus=0,
-                                    command=self._chats_button_pressing)
+                                    command=self.chats_button_pressing)
         self.chats_btn.pack(side=TOP)
 
         self.music_btn = ttk.Button(self, bootstyle=SECONDARY,
                                     image='music',
                                     padding=0,
                                     takefocus=0,
-                                    command=self._music_button_pressing)
+                                    command=self.music_button_pressing)
         self.music_btn.pack(side=TOP, pady=5)
 
         self.settings_btn = ttk.Button(self, bootstyle=SECONDARY,
                                        image='settings',
                                        padding=0,
                                        takefocus=0,
-                                       command=self._settings_button_pressing)
+                                       command=self.settings_button_pressing)
         self.settings_btn.pack(side=BOTTOM)
 
-    def _news_button_pressing(self):
+    def news_button_pressing(self):
         [i.state(['!pressed']) for i in self.pack_slaves() if 'pressed' in i.state()]
         [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
 
         self.news_btn.state(['pressed'])
 
-    def _profile_button_pressing(self):
+    def profile_button_pressing(self):
         [i.state(['!pressed']) for i in self.pack_slaves() if 'pressed' in i.state()]
         [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
 
         self.profile_btn.state(['pressed'])
 
-    def _chats_button_pressing(self):
+    def chats_button_pressing(self):
         [i.state(['!pressed']) for i in self.pack_slaves() if 'pressed' in i.state()]
         [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
 
@@ -89,13 +88,13 @@ class TabsFrame(ttk.Frame):
 
         self.chats_frame.pack(side=LEFT, expand=FALSE, fill=BOTH, padx=5)
 
-    def _music_button_pressing(self):
+    def music_button_pressing(self):
         [i.state(['!pressed']) for i in self.pack_slaves() if 'pressed' in i.state()]
         [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
 
         self.music_btn.state(['pressed'])
 
-    def _settings_button_pressing(self):
+    def settings_button_pressing(self):
         [i.state(['!pressed']) for i in self.pack_slaves() if 'pressed' in i.state()]
         [i.pack_forget() for i in self.parent.pack_slaves() if str(i) != '.!tabsframe']
 
