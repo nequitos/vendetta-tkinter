@@ -10,7 +10,7 @@ class ScrolledFrame(ttk.Frame):
 
     def __init__(self, parent, **kwargs):
         super(ScrolledFrame, self).__init__(parent, **kwargs)
-        self.bind('<Configure>', self._set_scrollbar)
+        self.bind('<Configure>', self._get_event_bind)
         self.configure(padding=0)
         self.parent = parent
 
@@ -22,12 +22,19 @@ class ScrolledFrame(ttk.Frame):
         self.canvas.config(yscrollcommand=scrollbar.set)
 
         self.interior = interior = ttk.Frame(canvas)
-        self.interior.bind('<Configure>', self._set_scrollbar)
-        self.canvas.create_window((0, 0), window=interior, anchor=NW)
+        self.interior.bind('<Configure>', self._get_event_bind)
+        self.interior_id = canvas.create_window((0, 0), window=interior, anchor=NW)
 
         self.update_idletasks()
 
-    def _set_scrollbar(self, event):
+    def _get_event_bind(self, event):
+        self._set_scrollbar()
+        self._update_frame_width()
+
+    def _update_frame_width(self):
+        self.canvas.itemconfig(self.interior_id, width=self.canvas.winfo_width())
+
+    def _set_scrollbar(self):
         if self.interior.winfo_height() > self.parent.winfo_height():
             self.canvas.config(scrollregion=self.canvas.bbox(ALL))
             self.scrollbar.pack(side=RIGHT, fill=Y)
