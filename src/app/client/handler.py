@@ -1,10 +1,10 @@
 import asyncio
 import logging
 
-
 import socket
 import pickle
 import time
+
 
 host, port = 'localhost', 65044
 
@@ -28,12 +28,12 @@ class BasicDispatchClient(socket.socket):
         data = await self.event_loop.sock_recv(self, 1024)
         print(data)
 
-    async def send_data(self, data=None):
+    async def send_data(self, data: str):
         await self.event_loop.sock_sendall(self, data.encode('utf-8'))
 
     async def get_tasks(self):
         listen_server_task = self.event_loop.create_task(self.listen_server())
-        send_data_task = self.event_loop.create_task(self.send_data())
+        send_data_task = self.event_loop.create_task(self.send_data(''))
 
         await asyncio.gather(listen_server_task, send_data_task)
 

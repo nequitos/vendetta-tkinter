@@ -1,3 +1,5 @@
+from threading import Thread
+import asyncio
 import logging
 import time
 
@@ -244,7 +246,7 @@ class DialogFrame(ttk.Frame):
         message_frame_line_label = ttk.Label(message_frame_line, text=message)
         message_frame_line_label.pack(side=RIGHT, fill=BOTH)
 
-        loop.run_until_complete(connection.send_data(data=message))
+        event_loop.run_until_complete(connection.send_data(data=message))
         self.scrolled_text.text.delete(1.0, END)
 
     def recv_message(self):
@@ -300,23 +302,24 @@ class ErrorWindow(ttk.Window):
 
 if __name__ == '__main__':
 
-    logging.basicConfig(
-        level=logging.DEBUG,
-        filename='logs/' + time.ctime().replace(':', '.') + '.log'
-    )
-    logger_ttk = logging.Logger('ttk')
-    logger_connection = logging.Logger('connection')
-
+    # logging.basicConfig(
+    #     level=logging.DEBUG,
+    #     filename='logs/' + time.ctime().replace(':', '.') + '.log'
+    # )
+    # logger_ttk = logging.Logger('ttk')
+    # logger_connection = logging.Logger('connection')
+    event_loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(event_loop)
     try:
         connection = BasicDispatchClient()
-        loop = connection.event_loop
-        connection.start_client()
+        connection_thread = Thread(target=connection.start_client).start()
 
         Application(title='Vendetta', themename='superhero').mainloop()
     except Exception as ex:
         print(ex)
-    finally:
-        pass
+    else:
+        event_loop.close()
+        connection.close()
 
 
 
