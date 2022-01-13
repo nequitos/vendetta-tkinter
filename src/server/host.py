@@ -4,36 +4,37 @@ import pickle
 import socketserver
 import psycopg2
 import logging
-import time
 
 
 class BaseRequestHandler(socketserver.BaseRequestHandler):
 
     def handle(self):
-        print(self.client_address)
+        logger.debug('Received connection from host {}, port {}'.format(*self.client_address))
         while True:
+            logger.debug('Waiting for data')
             data = self.request.recv(1024)
 
             if not data:
                 continue
             else:
-                print(data.decode('utf-8'))
+                logger.debug('Received data {}'.format(pickle.loads(data)))
+                print(pickle.loads(data))
 
     def finish(self):
         pass
 
 
 if __name__ == '__main__':
-    host, port = 'localhost', 65044
-    now_time = time.ctime()
+    from time import ctime
 
     logging.basicConfig(
         level=logging.DEBUG,
-        filename='logs/' + time.ctime().replace(':', '.') + '.log'
+        filename='logs/' + ctime().replace(':', '.') + '.log'
     )
-    logger_main = logging.getLogger('main')
+    logger = logging.getLogger('main')
 
     try:
+        logger.debug('Database connection')
         connection = psycopg2.connect(
             dbname=db_config["dbname"],
             user=db_config["user"],
@@ -41,8 +42,33 @@ if __name__ == '__main__':
             host=db_config["host"],
             port=db_config["port"]
         )
+        connection.autocommit = True
+
+        logger.debug('Create user table')
+        with connection.cursor() as cur:
+            logger.debug('Create users database')
+            # cur.execute(
+            #     """
+            #     CREATE TABLE users (
+            #     id serial PRIMARY KEY,
+            #     nick_name varchar(50) NOT NULL);
+            #     """
+            # )
+            logger.debug('Users database successful created')
+
     except Exception as exc:
-        logger_main.error('{}'.format(exc))
-    finally:
-        with socketserver.ThreadingTCPServer((host, port), BaseRequestHandler, bind_and_activate=True) as server:
-            server.serve_forever()
+        logger.error('{}'.format(exc))
+    else:
+        logger.debug('Server start')
+        try:
+            host, port = 'localhost', 65044
+            with socketserver.ThreadingTCPServer((host, port), BaseRequestHandler, bind_and_activate=True) as server:
+                server.serve_forever()
+        except Exception as exc:
+            logger.error('{}'.format(exc))
+        finally:
+            logger.debug('Closing server')
+            server.server_close()
+
+            logger.debug('Closing database connection')
+            connection.close()
