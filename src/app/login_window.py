@@ -7,84 +7,71 @@ class LoginWindow(ttk.Window):
         self.resizable(FALSE, FALSE)
         self.geometry('400x200')
 
-        self.grid_columnconfigure(0, minsize=100)
-        self.grid_columnconfigure(1, minsize=100)
-        self.grid_columnconfigure(2, minsize=100)
-        self.grid_columnconfigure(3, minsize=100)
-        self.grid_columnconfigure(4, minsize=100)
+        # form variables
+        self.login = ttk.StringVar(value='')
+        self.password = ttk.StringVar(value='')
 
-        ttk.Label(text='Login:').grid(row=0, column=0, padx=10, pady=10, sticky=W)
-        ttk.Label(text='Password:').grid(row=1, column=0, padx=10, pady=10, sticky=W)
+        self.create_form_entry('login:', self.login)
+        self.create_form_entry('password:', self.password)
 
-        login_entry = ttk.Entry()
-        login_entry.grid(row=0, column=1, columnspan=3, sticky=W+E)
+        self.create_button_box()
 
-        password_entry = ttk.Entry()
-        password_entry.grid(row=1, column=1, columnspan=3, sticky=W+E)
+    def create_form_entry(self, label, variable):
+        container = ttk.Frame(self)
+        container.pack(fill=X, pady=5)
 
-        auto_login_check_btn = ttk.Checkbutton(text='auto login')
-        auto_login_check_btn.grid(row=2, column=1, columnspan=2, sticky=N, pady=5)
+        lbl = ttk.Label(container, width=10, text=label.title())
+        lbl.pack(side=LEFT, padx=5)
 
-        forgot_password_label = ttk.Label(bootstyle=INFO,
-                                          text='Forgot password?',
-                                          justify=CENTER,
-                                          cursor='hand2')
-        forgot_password_label.bind('<Button-1>', self.password_recovery)
-        forgot_password_label.grid(row=3, column=1, columnspan=2, sticky=N)
+        ent = ttk.Entry(container, width=50, textvariable=variable)
+        ent.pack(side=LEFT, fill=X, padx=5)
 
-        registration_btn = ttk.Button(bootstyle=SECONDARY,
-                                      text='registration',
-                                      takefocus=0,
-                                      command=self.registration)
-        registration_btn.grid(row=4, column=2, sticky=W+E, pady=20)
+    def create_button_box(self):
+        container = ttk.Frame(self)
+        container.pack(fill=X, expand=TRUE)
 
-        login_btn = ttk.Button(bootstyle=SECONDARY,
-                               text='login',
-                               takefocus=0)
-        login_btn.grid(row=4, column=3, sticky=W+E)
+        auto_auth_btn = ttk.Checkbutton(
+            container,
+            text='auto authorization')
+        auto_auth_btn.pack(side=TOP)
 
-        self.update_idletasks()
+        forgot_label = ttk.Label(
+            container,
+            bootstyle=INFO,
+            text='Forgot password?',
+            cursor='hand2'
+        )
+        forgot_label.bind('<Button-1>', self.on_forgot)
+        forgot_label.pack(side=TOP)
 
-    @staticmethod
-    def registration():
-        registration_window = ttk.Toplevel(title='Create an account for Vendetta')
-        registration_window.resizable(FALSE, FALSE)
-        registration_window.geometry('390x350')
+        login_btn = ttk.Button(
+            container,
+            bootstyle=SECONDARY,
+            width=10,
+            text='login',
+            takefocus=0,
+            command=self.on_login
+        )
+        login_btn.pack(side=RIGHT, pady=25, padx=5)
 
-        registration_window.grid_columnconfigure(0, minsize=70)
-        registration_window.grid_columnconfigure(1, minsize=70)
+        reg_btn = ttk.Button(
+            container,
+            bootstyle=SECONDARY,
+            width=10,
+            text='registration',
+            takefocus=0,
+            command=self.on_reg
+        )
+        reg_btn.pack(side=RIGHT, pady=25, padx=5)
 
-        ttk.Label(registration_window,
-                  text='Enter your email').grid(row=0, column=0, columnspan=3, sticky=N, pady=10)
+    def on_forgot(self, event):
+        pass
 
-        ttk.Label(registration_window,
-                  text='Mail:').grid(row=1, column=0, sticky=W, padx=10)
-        mail_entry = ttk.Entry(registration_window)
-        mail_entry.grid(row=1, column=1, columnspan=2, sticky=W+E)
+    def on_login(self):
+        pass
 
-    @staticmethod
-    def password_recovery(event):
-        recovery_window = ttk.Toplevel(title='Vendetta account recovery')
-        recovery_window.resizable(FALSE, FALSE)
-        recovery_window.geometry('390x150')
-
-        recovery_window.grid_columnconfigure(0, minsize=130)
-        recovery_window.grid_columnconfigure(1, minsize=130)
-        recovery_window.grid_columnconfigure(2, minsize=130)
-
-        ttk.Label(recovery_window,
-                  text='Enter the email to which the account is linked',
-                  justify=CENTER).grid(row=0, column=0, columnspan=3, sticky=N, pady=10)
-
-        ttk.Label(recovery_window, text='Mail:').grid(row=1, column=0, sticky=N)
-        recovery_mail_entry = ttk.Entry(recovery_window)
-        recovery_mail_entry.grid(row=1, column=1, columnspan=3, sticky=W+E)
-
-        ttk.Button(recovery_window, bootstyle=SECONDARY,
-                   text='send',
-                   takefocus=0).grid(row=2, column=0, columnspan=3, sticky=W+E, pady=30)
-
-        recovery_window.mainloop()
+    def on_reg(self):
+        pass
 
 
 if __name__ == '__main__':
