@@ -1,0 +1,91 @@
+
+__all__ = ['RegFrame']
+
+from utils import *
+
+
+class RegFrame(ttk.Frame):
+    def __init__(self, parent, previous, **kwargs):
+        super(RegFrame, self).__init__(parent, **kwargs)
+
+        self.parent = parent
+        self.previous = previous
+
+        # form variables
+        self.mail = ttk.StringVar(value='')
+        self.name = ttk.StringVar(value='')
+        self.password = ttk.StringVar(value='')
+        self.re_password = ttk.StringVar(value='')
+        self.invitation = ttk.StringVar(value='')
+
+        # Head
+        ttk.Label(self, text='Fill in the following information if you are creating an account').pack(side=TOP, pady=5)
+
+        # creating
+        mail_head = 'Enter your future mail'
+        self.create_form_entry(mail_head, 'mail', self.mail)
+
+        name_head = 'Enter your future name'
+        self.create_form_entry(name_head, 'name', self.name)
+
+        password_head = 'Enter your future password'
+        self.create_form_entry(password_head, 'password', self.name)
+
+        re_password_head = 'Repeat the password you entered'
+        self.create_form_entry(re_password_head, 're-password', self.re_password)
+
+        invitation_head = 'Enter the invitation code received by you or issued by someone else'
+        self.create_form_entry(invitation_head, 'invitation', self.invitation)
+
+        self.create_button_box()
+
+    def create_form_entry(self, head, label, variable):
+        container = ttk.Frame(self)
+        container.pack(fill=X, pady=5)
+
+        ttk.Label(container, text=head).pack(side=TOP, fill=X)
+
+        lbl = ttk.Label(container, width=15, text=label.title())
+        lbl.pack(side=LEFT, padx=5)
+
+        ent = ttk.Entry(container, width=45, textvariable=variable)
+        ent.pack(side=LEFT, fill=X, padx=5)
+
+    def create_button_box(self):
+        container = ttk.Frame(self)
+        container.pack(fill=X, expand=TRUE)
+
+        send_btn = ttk.Button(
+            container,
+            width=10,
+            text='send',
+            takefocus=0,
+            command=self.on_send
+        )
+        send_btn.pack(side=RIGHT, pady=25, padx=5)
+
+        cancel_btn = ttk.Button(
+            container,
+            width=10,
+            text='cancel',
+            takefocus=0,
+            command=self.on_cancel
+        )
+        cancel_btn.pack(side=RIGHT, pady=25, padx=5)
+
+    def on_send(self):
+        pass
+
+    def on_cancel(self):
+        self.pack_forget()
+        self.previous.pack()
+
+
+if __name__ == '__main__':
+    from setup import theme
+    from tkinter.commondialog import Dialog
+    from login_frame import LoginFrame
+
+    root = ttk.Window(title='Registration frame', themename=theme)
+    RegFrame(root, LoginFrame(root)).pack()
+    root.mainloop()

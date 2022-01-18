@@ -1,15 +1,18 @@
 from utils import *
+from reg_frame import RegFrame
+from recovery_frame import RecoveryFrame
 
 
-class LoginWindow(ttk.Window):
-    def __init__(self, **kwargs):
-        super(LoginWindow, self).__init__(**kwargs)
-        self.resizable(FALSE, FALSE)
-        self.geometry('400x200')
+class LoginFrame(ttk.Frame):
+    def __init__(self, parent, **kwargs):
+        super(LoginFrame, self).__init__(parent, **kwargs)
+
+        self.parent = parent
 
         # form variables
         self.login = ttk.StringVar(value='')
         self.password = ttk.StringVar(value='')
+        self.auto_auth = ttk.IntVar()
 
         self.create_form_entry('login:', self.login)
         self.create_form_entry('password:', self.password)
@@ -28,11 +31,12 @@ class LoginWindow(ttk.Window):
 
     def create_button_box(self):
         container = ttk.Frame(self)
-        container.pack(fill=X, expand=TRUE)
+        container.pack(fill=X)
 
         auto_auth_btn = ttk.Checkbutton(
             container,
-            text='auto authorization')
+            text='auto authorization',
+            variable=self.auto_auth)
         auto_auth_btn.pack(side=TOP)
 
         forgot_label = ttk.Label(
@@ -52,7 +56,7 @@ class LoginWindow(ttk.Window):
             takefocus=0,
             command=self.on_login
         )
-        login_btn.pack(side=RIGHT, pady=25, padx=5)
+        login_btn.pack(side=RIGHT, pady=15, padx=5)
 
         reg_btn = ttk.Button(
             container,
@@ -62,19 +66,23 @@ class LoginWindow(ttk.Window):
             takefocus=0,
             command=self.on_reg
         )
-        reg_btn.pack(side=RIGHT, pady=25, padx=5)
+        reg_btn.pack(side=RIGHT, pady=15, padx=5)
 
-    def on_forgot(self, event):
-        pass
+    def on_forgot(self, event=None):
+        self.pack_forget()
+        RecoveryFrame(self.parent, self).pack()
 
     def on_login(self):
         pass
 
     def on_reg(self):
-        pass
+        self.pack_forget()
+        RegFrame(self.parent, self).pack()
 
 
 if __name__ == '__main__':
     from setup import theme
 
-    LoginWindow(title='Login Window', themename=theme).mainloop()
+    root = ttk.Window(title='Login frame', themename=theme)
+    LoginFrame(root).pack()
+    root.mainloop()
