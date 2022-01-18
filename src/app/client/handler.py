@@ -14,6 +14,10 @@ class BasicDispatchClient(socket.socket):
         self.event_loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.event_loop)
 
+    @staticmethod
+    def get_structure(**kwargs):
+        pass
+
     def set_up(self):
         self.logger.debug('Connect to server host {}, port {}'.format(self.host, self.port))
         self.connect(
@@ -34,15 +38,15 @@ class BasicDispatchClient(socket.socket):
                 self.logger.debug('Data received {}'.format(pickle.loads(data)))
                 return data
 
-    async def send_data(self, data):
+    async def send_data(self, structure):
         self.logger.debug('Sending data to server')
-        await self.event_loop.sock_sendall(self, pickle.dumps(data))
+        await self.event_loop.sock_sendall(self, pickle.dumps(structure))
         self.logger.debug('Data sent successfully')
 
     async def get_tasks(self):
         self.logger.debug('Creating tasks for processing')
         listen_server_task = self.event_loop.create_task(self.listen_server())
-        send_data_task = self.event_loop.create_task(self.send_data('First connection message.'))
+        send_data_task = self.event_loop.create_task(self.send_data())
 
         self.logger.debug('Collection of all tasks')
         await asyncio.gather(listen_server_task, send_data_task)

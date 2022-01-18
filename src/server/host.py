@@ -12,13 +12,13 @@ class BaseRequestHandler(socketserver.BaseRequestHandler):
         logger.debug('Received connection from host {}, port {}'.format(*self.client_address))
         while True:
             logger.debug('Waiting for data')
-            data = self.request.recv(1024)
+            data = pickle.loads(self.request.recv(1024))
 
             if not data:
                 continue
             else:
-                logger.debug('Received data {}'.format(pickle.loads(data)))
-                print(pickle.loads(data))
+                logger.debug('Received data {}'.format(data))
+                print(data)
 
     def finish(self):
         pass

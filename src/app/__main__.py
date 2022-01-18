@@ -59,6 +59,7 @@ if __name__ == '__main__':
     from setup import theme
 
     AuthorizationWindow(title='Auth window', themename=theme).mainloop()
+    #Application(title='Vendetta Alpha', themename=theme).mainloop()
 
     # from setup import event_loop, theme, logger, connection
     #

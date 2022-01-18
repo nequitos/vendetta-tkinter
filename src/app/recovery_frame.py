@@ -46,6 +46,7 @@ class RecoveryFrame(ttk.Frame):
             text='send code to email',
             cursor='hand2'
         )
+        send_code_label.bind('<Button-1>', lambda _: self.on_send_code(send_code_label))
         send_code_label.pack(side=TOP, pady=10)
 
         send_btn = ttk.Button(
@@ -66,8 +67,8 @@ class RecoveryFrame(ttk.Frame):
         )
         cancel_btn.pack(side=RIGHT, pady=15, padx=5)
 
-    def on_send_code(self, event=None):
-        pass
+    def on_send_code(self, label, event=None):
+        label.configure(bootstyle=SECONDARY, cursor='arrow')
 
     def on_send(self):
         pass
