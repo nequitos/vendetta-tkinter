@@ -2,6 +2,7 @@
 __all__ = ['RegFrame']
 
 from utils import *
+from setup import connection
 
 
 class RegFrame(ttk.Frame):

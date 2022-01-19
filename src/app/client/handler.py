@@ -7,26 +7,20 @@ import pickle
 
 class BasicDispatchClient(socket.socket):
     def __init__(self):
-        super(BasicDispatchClient, self).__init__()
+        super(BasicDispatchClient, self).__init__(
+            socket.AF_INET, socket.SOCK_STREAM
+        )
         self.host, self.port = 'localhost', 65044
         self.logger = logging.getLogger('connection')
 
         self.event_loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self.event_loop)
 
-    @staticmethod
-    def get_structure(**kwargs):
-        pass
-
     def set_up(self):
         self.logger.debug('Connect to server host {}, port {}'.format(self.host, self.port))
         self.connect(
             (self.host, self.port)
         )
-
-    def start_client(self):
-        self.logger.debug('Running server tasks')
-        self.event_loop.run_until_complete(self.get_tasks())
 
     async def listen_server(self):
         while True:
@@ -38,18 +32,13 @@ class BasicDispatchClient(socket.socket):
                 self.logger.debug('Data received {}'.format(pickle.loads(data)))
                 return data
 
-    async def send_data(self, structure):
-        self.logger.debug('Sending data to server')
-        await self.event_loop.sock_sendall(self, pickle.dumps(structure))
-        self.logger.debug('Data sent successfully')
+    async def send_data(self, **kwargs):
+        structure = {'type': kwargs['type'], 'data': kwargs['data']}
 
-    async def get_tasks(self):
-        self.logger.debug('Creating tasks for processing')
-        listen_server_task = self.event_loop.create_task(self.listen_server())
-        send_data_task = self.event_loop.create_task(self.send_data())
-
-        self.logger.debug('Collection of all tasks')
-        await asyncio.gather(listen_server_task, send_data_task)
+        if len(structure) > 0:
+            self.logger.debug('Sending data to server')
+            await self.event_loop.sock_sendall(self, pickle.dumps(structure))
+            self.logger.debug('Data sent successfully')
 
 
 # For debugging
@@ -57,10 +46,13 @@ if __name__ == '__main__':
     try:
         with BasicDispatchClient() as connection:
             logger = connection.logger
+            logger.setLevel(logging.DEBUG)
             logger.debug('Waiting for client to complete')
             loop = connection.event_loop
             connection.set_up()
-            loop.run_until_complete(connection.send_data(data='My message'))
+            loop.run_until_complete(connection.send_data(type='message', data='My message'))
     finally:
         logger.debug('Closing event loop')
         loop.close()
+
+

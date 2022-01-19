@@ -5,7 +5,6 @@ from utils import *
 class Application(ttk.Window):
     def __init__(self, **kwargs):
         super(Application, self).__init__(**kwargs)
-        # self.geometry('900x600')
         self.minsize(width=202, height=550)
 
         self.full_screen_state = False
@@ -58,25 +57,23 @@ if __name__ == '__main__':
 
     from setup import theme
 
-    AuthorizationWindow(title='Auth window', themename=theme).mainloop()
+    #AuthorizationWindow(title='Auth window', themename=theme).mainloop()
     #Application(title='Vendetta Alpha', themename=theme).mainloop()
 
-    # from setup import event_loop, theme, logger, connection
-    #
-    # try:
-    #     connection.set_up()
-    #     connection_thread = Thread(target=connection.start_client).start()
-    #
-    #     logger.debug('Run application')
-    #     try:
-    #         Application(title='Vendetta Alpha', themename=theme).mainloop()
-    #         #LoginWindow(title='Login', themename=theme).mainloop()
-    #     except Exception as exc:
-    #         logger.error('{}'.format(exc))
-    #
-    # except Exception as exc:
-    #     logger.error('{}'.format(exc))
-    # else:
-    #     logger.debug('Close connection')
-    #     event_loop.close()
-    #     connection.close()
+    from setup import event_loop, theme, logger, connection
+
+    try:
+        connection.set_up()
+        logger.debug('Run application')
+        try:
+            Application(title='Vendetta Alpha', themename=theme).mainloop()
+            #LoginWindow(title='Login', themename=theme).mainloop()
+        except Exception as exc:
+            logger.error('{}'.format(exc))
+
+    except Exception as exc:
+        logger.error('{}'.format(exc))
+    else:
+        logger.debug('Close connection')
+        event_loop.close()
+        connection.close()

@@ -60,7 +60,7 @@ class DialogFrame(ttk.Frame):
         message_frame_line_label.pack(side=RIGHT, fill=BOTH)
 
         logger.debug('Send message {}'.format(message))
-        event_loop.run_until_complete(connection.send_data(data=message))
+        event_loop.run_until_complete(connection.send_data(type='message', data=message))
         self.scrolled_text.text.delete(1.0, END)
 
     def recv_message(self):

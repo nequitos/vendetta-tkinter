@@ -4,9 +4,6 @@ import asyncio
 from client.handler import BasicDispatchClient
 from src.app.data.config import theme
 
-event_loop = asyncio.new_event_loop()
-asyncio.set_event_loop(event_loop)
-
 from time import ctime
 from os.path import exists
 from os import mkdir
@@ -20,3 +17,5 @@ logging.basicConfig(
 logger = logging.getLogger('application')
 
 connection = BasicDispatchClient()
+event_loop = connection.event_loop
+asyncio.set_event_loop(event_loop)
