@@ -1,4 +1,4 @@
-from utils import *
+from setup import *
 from chats_frame import ChatsFrame
 
 from pathlib import Path

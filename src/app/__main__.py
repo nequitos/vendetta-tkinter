@@ -1,5 +1,5 @@
 from threading import Thread
-from utils import *
+from setup import *
 
 
 class Application(ttk.Window):
@@ -55,12 +55,8 @@ if __name__ == '__main__':
     from tabs_frame import TabsFrame
     from login_frame import LoginFrame
 
-    from setup import theme
-
     #AuthorizationWindow(title='Auth window', themename=theme).mainloop()
     #Application(title='Vendetta Alpha', themename=theme).mainloop()
-
-    from setup import event_loop, theme, logger, connection
 
     try:
         connection.set_up()

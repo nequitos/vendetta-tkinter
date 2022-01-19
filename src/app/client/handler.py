@@ -4,6 +4,8 @@ import logging
 import socket
 import pickle
 
+from handler_api import *
+
 
 class BasicDispatchClient(socket.socket):
     def __init__(self):
@@ -33,7 +35,7 @@ class BasicDispatchClient(socket.socket):
                 return data
 
     async def send_data(self, **kwargs):
-        structure = {'type': kwargs['type'], 'data': kwargs['data']}
+        structure = get_structure(**kwargs)
 
         if len(structure) > 0:
             self.logger.debug('Sending data to server')

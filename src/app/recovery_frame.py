@@ -1,4 +1,4 @@
-from utils import *
+from setup import *
 
 
 class RecoveryFrame(ttk.Frame):

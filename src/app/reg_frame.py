@@ -1,8 +1,7 @@
 
 __all__ = ['RegFrame']
 
-from utils import *
-from setup import connection
+from setup import *
 
 
 class RegFrame(ttk.Frame):
@@ -18,6 +17,7 @@ class RegFrame(ttk.Frame):
         self.password = ttk.StringVar(value='')
         self.re_password = ttk.StringVar(value='')
         self.invitation = ttk.StringVar(value='')
+        self.code = ttk.StringVar(value='')
 
         # Head
         ttk.Label(self, text='Fill in the following information if you are creating an account').pack(side=TOP, pady=5)
@@ -38,6 +38,9 @@ class RegFrame(ttk.Frame):
         invitation_head = 'Enter the invitation code received by you or issued by someone else'
         self.create_form_entry(invitation_head, 'invitation', self.invitation)
 
+        code_head = 'Code sent to your email'
+        self.create_form_entry(code_head, 'code', self.code)
+
         self.create_button_box()
 
     def create_form_entry(self, head, label, variable):
@@ -56,6 +59,15 @@ class RegFrame(ttk.Frame):
         container = ttk.Frame(self)
         container.pack(fill=X, expand=TRUE)
 
+        send_code_label = ttk.Label(
+            container,
+            bootstyle=INFO,
+            text='send code to email',
+            cursor='hand2'
+        )
+        send_code_label.bind('<Button-1>', lambda _: self.on_send_code(send_code_label))
+        send_code_label.pack(side=TOP, pady=10)
+
         send_btn = ttk.Button(
             container,
             width=10,
@@ -73,6 +85,11 @@ class RegFrame(ttk.Frame):
             command=self.on_cancel
         )
         cancel_btn.pack(side=RIGHT, pady=25, padx=5)
+
+    def on_send_code(self, label, event=None):
+        label.configure(bootstyle=SECONDARY, cursor='arrow')
+
+        event_loop.run_until_complete(connection.send_data(type=Events.RECEIVE_REGISTRATION_CODE))
 
     def on_send(self):
         pass
