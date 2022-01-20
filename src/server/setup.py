@@ -9,6 +9,7 @@ import psycopg
 
 from time import ctime
 
+from db_handler import BaseDBHandler
 from data.config import host, port
 
 logging.basicConfig(

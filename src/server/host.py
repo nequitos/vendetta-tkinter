@@ -1,4 +1,3 @@
-from db_handler import BaseDBHandler
 from server_tcp import ServerTCP
 
 from setup import *
@@ -6,8 +5,8 @@ from setup import *
 
 if __name__ == '__main__':
     try:
-        # with BaseDBHandler() as db:
-        #     pass
+        with BaseDBHandler() as db:
+            pass
 
         with ServerTCP() as server_tcp:
             server_tcp.start_server()
