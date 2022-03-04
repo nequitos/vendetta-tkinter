@@ -1,3 +1,6 @@
+import asyncio
+import pickle
+
 from setup import *
 
 
@@ -48,6 +51,7 @@ class DialogFrame(ttk.Frame):
         control_frame.pack(side=RIGHT, expand=FALSE, fill=BOTH)
 
         self.update_idletasks()
+        Thread(target=self.recv_message).start()
 
     def send_message(self, event):
         message = self.scrolled_text.text.get(1.0, END).strip()
@@ -59,11 +63,25 @@ class DialogFrame(ttk.Frame):
         message_frame_line_label.pack(side=RIGHT, fill=BOTH)
 
         logger.debug('Send message {}'.format(message))
-        event_loop.run_until_complete(connection.send_data(type=Events.MESSAGE_NEW, data=message))
+        event_loop.run_until_complete(connection.send_data(
+            type=Events.MESSAGE_NEW, data=message, dialog_name=self.dialog_name)
+        )
         self.scrolled_text.text.delete(1.0, END)
 
     def recv_message(self):
-        message = event_loop.run_until_complete(connection.listen_server())
+        while True:
+            message = connection.listen_server()
+            print(message['data'])
+            if len(message) > 0:
+                if message['dialog_name'] == self.dialog_name:
+                    print('YES')
+                    message_frame_line = ttk.Frame(self.messages_frame.interior, bootstyle=INFO)
+                    message_frame_line.pack(side=TOP, expand=TRUE, fill=X)
+
+                    message_frame_line_label = ttk.Label(message_frame_line, text=message['data'])
+                    message_frame_line_label.pack(side=LEFT, fill=BOTH)
+            else:
+                continue
 
 
 if __name__ == '__main__':

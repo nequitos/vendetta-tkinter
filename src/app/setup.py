@@ -4,18 +4,23 @@ import logging
 import asyncio
 
 from client import *
-from src.app.data.config import theme
+from data.config import theme
 
 from time import ctime
 from os.path import exists
 from os import mkdir
+import pickle
+
+from multiprocessing import Process
+from threading import Thread
 
 if not exists('client/logs'):
     mkdir('client/logs')
 
 logging.basicConfig(
     level=logging.DEBUG,
-    filename='client/logs/' + ctime().replace(':', '.') + '.log')
+    filename=None #'client/logs/' + ctime().replace(':', '.') + '.log'
+)
 logger = logging.getLogger('application')
 
 connection = BasicDispatchClient()

@@ -55,21 +55,15 @@ if __name__ == '__main__':
     from tabs_frame import TabsFrame
     from login_frame import LoginFrame
 
-    #AuthorizationWindow(title='Auth window', themename=theme).mainloop()
-    Application(title='Vendetta Alpha', themename=theme).mainloop()
+    # AuthorizationWindow(title='Auth window', themename=theme).mainloop()
+    # Application(title='Vendetta Alpha', themename=theme).mainloop()
 
-    # try:
-    #     connection.set_up()
-    #     logger.debug('Run application')
-    #     try:
-    #         Application(title='Vendetta Alpha', themename=theme).mainloop()
-    #         #LoginWindow(title='Login', themename=theme).mainloop()
-    #     except Exception as exc:
-    #         logger.error('{}'.format(exc))
-    #
-    # except Exception as exc:
-    #     logger.error('{}'.format(exc))
-    # else:
-    #     logger.debug('Close connection')
-    #     event_loop.close()
-    #     connection.close()
+    logger.debug('Run application')
+    try:
+        Application(title='Vendetta Alpha', themename=theme).mainloop()
+        # LoginWindow(title='Login', themename=theme).mainloop()
+    except Exception as exc:
+        logger.error('{}'.format(exc))
+    else:
+        event_loop.close()
+        connection.close()

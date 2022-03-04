@@ -1,10 +1,10 @@
 # GUI
-ttkbootstrap==1.5.0
+ttkbootstrap==1.7.2
 
 # Asynchronous Postgres
 psycopg==3.0.8
 psycopg-binary=3.0.8
 
 # Other
-environs==9.4.0
+environs==9.5.0
 aiofiles==0.8.0
