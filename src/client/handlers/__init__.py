@@ -1,6 +1,5 @@
-from .handler import *
+from .server_handler import *
 
 __all__ = [
     'BasicDispatchClient',
-    'Events'
 ]
