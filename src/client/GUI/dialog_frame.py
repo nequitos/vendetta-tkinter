@@ -1,8 +1,6 @@
 from src.client.app_api import *
 from src.client.utils.misc import connection, event_loop
 
-print(connection)
-
 
 class DialogFrame(ttk.Frame):
     def __init__(self, parent, **kwargs):

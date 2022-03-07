@@ -1,5 +1,9 @@
-from app_api import *
 
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent.parent.absolute()))
+
+from app_api import *
 from utils.misc import *
 from data.config import *
 from GUI import *

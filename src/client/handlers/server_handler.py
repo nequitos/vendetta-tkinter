@@ -31,7 +31,6 @@ class BasicDispatchClient(socket.socket):
             self.logger.debug('Data on server has not information')
             return
         else:
-            print(pickle.loads(data))
             self.logger.debug('Data received {}'.format(pickle.loads(data)))
             return pickle.loads(data)
 
