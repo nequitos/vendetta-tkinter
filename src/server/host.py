@@ -21,7 +21,7 @@ class BaseRequestHandler(socket.socket):
         self.logger = logging.getLogger('server_tcp')
 
         self.event_loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.event_loop)
+        self.exception = self.event_loop.set_exception_handler(handler=None)
 
         self.set_up()
 
@@ -50,21 +50,26 @@ class BaseRequestHandler(socket.socket):
 
     async def listen_client(self, conn):
         while True:
-            data = await self.event_loop.sock_recv(conn, 1024)
-            obj = pickle.loads(data)
-
-            if not data:
-                logger.debug('Remove from active user {}'.format(conn))
+            try:
+                data = await self.event_loop.sock_recv(conn, 1024)
+                obj = pickle.loads(data)
+            except Exception as exc:
+                self.logger.debug('Connection {} is closed'.format(conn))
                 users.remove(conn)
-                continue
+                self.logger.error('{}'.format(exc))
+                break
             else:
-                logger.debug('Received data {}'.format(pickle.loads(data)))
+                if not data:
+                    self.logger.debug('Data is empty')
+                    continue
+                else:
+                    logger.debug('Received data {}'.format(pickle.loads(data)))
 
-                if obj['type'] == Events.MESSAGE_NEW:
-                    if obj['dialog_name'] == 'main':
-                        for user in users:
-                            if conn != user:
-                                await self.send_data(user, dialog_name=obj['dialog_name'], data=obj['data'])
+                    if obj['type'] == Events.MESSAGE_NEW:
+                        if obj['dialog_name'] == 'main':
+                            for user in users:
+                                if conn != user:
+                                    await self.send_data(user, dialog_name=obj['dialog_name'], data=obj['data'])
 
     async def send_data(self, conn, **kwargs):
         if not kwargs:

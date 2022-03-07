@@ -1,7 +1,7 @@
-import asyncio
-import pickle
+from src.client.app_api import *
+from src.client.utils.misc import connection, event_loop
 
-from setup import *
+print(connection)
 
 
 class DialogFrame(ttk.Frame):
@@ -62,9 +62,8 @@ class DialogFrame(ttk.Frame):
         message_frame_line_label = ttk.Label(message_frame_line, text=message)
         message_frame_line_label.pack(side=RIGHT, fill=BOTH)
 
-        logger.debug('Send message {}'.format(message))
         event_loop.run_until_complete(connection.send_data(
-            type=Events.MESSAGE_NEW, data=message, dialog_name=self.dialog_name)
+            type=MESSAGE_NEW, data=message, dialog_name=self.dialog_name)
         )
         self.scrolled_text.text.delete(1.0, END)
 
@@ -85,8 +84,7 @@ class DialogFrame(ttk.Frame):
 
 
 if __name__ == '__main__':
-    from setup import theme
 
-    root = ttk.Window(title='Dialogue Frame', themename=theme)
+    root = ttk.Window(title='Dialogue Frame', themename='superhero')
     DialogFrame(root).pack()
     root.mainloop()

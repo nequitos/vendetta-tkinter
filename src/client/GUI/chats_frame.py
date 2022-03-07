@@ -1,7 +1,5 @@
-from utils import *
-from dialog_frame import DialogFrame
-
-from pathlib import Path
+from src.client.app_api import *
+from .dialog_frame import DialogFrame
 
 
 class ChatsFrame(ScrolledFrame):
@@ -22,7 +20,7 @@ class ChatsFrame(ScrolledFrame):
             'main': 'main.png'
         }
         self.photo_images = []
-        img_path = Path(__file__).parent / 'icons'
+        img_path = Path(__file__).parent.absolute() / 'icons'
         for k, v in image_files.items():
             _path = img_path / v
             self.photo_images.append(ttk.PhotoImage(name=k, file=_path))

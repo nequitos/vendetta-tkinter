@@ -1,6 +1,6 @@
-from setup import *
-from reg_frame import RegFrame
-from recovery_frame import RecoveryFrame
+from src.client.app_api import *
+from .reg_frame import RegFrame
+from .recovery_frame import RecoveryFrame
 
 
 class LoginFrame(ttk.Frame):

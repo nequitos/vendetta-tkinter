@@ -1,32 +1,48 @@
-from setup import *
+from src.client.app_api import *
 
 
-class RecoveryFrame(ttk.Frame):
+class RegFrame(ttk.Frame):
     def __init__(self, parent, previous, **kwargs):
-        super(RecoveryFrame, self).__init__(parent, **kwargs)
+        super(RegFrame, self).__init__(parent, **kwargs)
 
         self.parent = parent
         self.previous = previous
 
         # form variables
         self.mail = ttk.StringVar(value='')
+        self.name = ttk.StringVar(value='')
         self.password = ttk.StringVar(value='')
         self.re_password = ttk.StringVar(value='')
+        self.invitation = ttk.StringVar(value='')
         self.code = ttk.StringVar(value='')
 
         # Head
-        ttk.Label(self, text='Enter the following details to recover your account').pack(side=TOP, pady=5)
+        ttk.Label(self, text='Fill in the following information if you are creating an account').pack(side=TOP, pady=5)
 
-        self.create_form_entry('Email specified during registration', 'mail', self.mail)
-        self.create_form_entry('The new password you want to set', 'password', self.password)
-        self.create_form_entry('Renew new password', 're-password', self.re_password)
-        self.create_form_entry('Code sent to your email', 'code', self.code)
+        # creating
+        mail_head = 'Enter your future mail'
+        self.create_form_entry(mail_head, 'mail', self.mail)
+
+        name_head = 'Enter your future name'
+        self.create_form_entry(name_head, 'name', self.name)
+
+        password_head = 'Enter your future password'
+        self.create_form_entry(password_head, 'password', self.name)
+
+        re_password_head = 'Repeat the password you entered'
+        self.create_form_entry(re_password_head, 're-password', self.re_password)
+
+        invitation_head = 'Enter the invitation code received by you or issued by someone else'
+        self.create_form_entry(invitation_head, 'invitation', self.invitation)
+
+        code_head = 'Code sent to your email'
+        self.create_form_entry(code_head, 'code', self.code)
 
         self.create_button_box()
 
     def create_form_entry(self, head, label, variable):
         container = ttk.Frame(self)
-        container.pack(fill=X)
+        container.pack(fill=X, pady=5)
 
         ttk.Label(container, text=head).pack(side=TOP, fill=X)
 
@@ -38,7 +54,7 @@ class RecoveryFrame(ttk.Frame):
 
     def create_button_box(self):
         container = ttk.Frame(self)
-        container.pack(side=TOP, fill=X)
+        container.pack(fill=X, expand=TRUE)
 
         send_code_label = ttk.Label(
             container,
@@ -56,7 +72,7 @@ class RecoveryFrame(ttk.Frame):
             takefocus=0,
             command=self.on_send
         )
-        send_btn.pack(side=RIGHT, pady=15, padx=5)
+        send_btn.pack(side=RIGHT, pady=25, padx=5)
 
         cancel_btn = ttk.Button(
             container,
@@ -65,10 +81,12 @@ class RecoveryFrame(ttk.Frame):
             takefocus=0,
             command=self.on_cancel
         )
-        cancel_btn.pack(side=RIGHT, pady=15, padx=5)
+        cancel_btn.pack(side=RIGHT, pady=25, padx=5)
 
     def on_send_code(self, label, event=None):
         label.configure(bootstyle=SECONDARY, cursor='arrow')
+
+        event_loop.run_until_complete(connection.send_data(type=Events.RECEIVE_REGISTRATION_CODE))
 
     def on_send(self):
         pass
@@ -80,8 +98,9 @@ class RecoveryFrame(ttk.Frame):
 
 if __name__ == '__main__':
     from setup import theme
+    from tkinter.commondialog import Dialog
     from login_frame import LoginFrame
 
-    root = ttk.Window(title='Recovery frame', themename=theme)
-    RecoveryFrame(root, LoginFrame(root)).pack()
+    root = ttk.Window(title='Registration frame', themename=theme)
+    RegFrame(root, LoginFrame(root)).pack()
     root.mainloop()

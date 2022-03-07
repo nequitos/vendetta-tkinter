@@ -1,5 +1,5 @@
-from setup import *
-from chats_frame import ChatsFrame
+from src.client.app_api import *
+from .chats_frame import ChatsFrame
 
 from pathlib import Path
 
@@ -24,7 +24,7 @@ class TabsFrame(ttk.Frame):
             'settings': 'settings.png'
         }
         self.photo_images = []
-        img_path = Path(__file__).parent / 'icons'
+        img_path = Path(__file__).parent.absolute() / 'icons'
         for k, v in image_files.items():
             _path = img_path / v
             self.photo_images.append(ttk.PhotoImage(name=k, file=_path))

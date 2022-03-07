@@ -1,4 +1,4 @@
-from setup import *
+from src.client.app_api import *
 
 
 class ErrorWindow(ttk.Window):

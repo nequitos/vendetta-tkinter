@@ -1,7 +1,6 @@
 from ttkbootstrap.constants import *
 import ttkbootstrap as ttk
 
-#from ttkbootstrap.scrolled import ScrolledFrame
 
 class ScrolledFrame(ttk.Frame):
     """
