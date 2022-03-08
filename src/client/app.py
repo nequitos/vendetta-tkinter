@@ -1,22 +1,27 @@
-
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent.parent.parent.absolute()))
 
-from app_api import *
-from utils.misc import *
-from data.config import *
-from GUI import *
+from GUI.main_window import MainWindow
+from GUI.auth_window import AuthorizationWindow
+from GUI.error_window import ErrorWindow
+
+
+from data.config import theme
+from utils.misc.connection import connection
 
 
 def on_startup(connection):
     try:
         connection.set_up()
-        MainWindow(title='Vendetta', themename=theme).mainloop()
     except Exception as exc:
         ErrorWindow(title='Error window', themename=theme).mainloop()
+        connection.close()
     else:
-        event_loop.close()
+        # AuthorizationWindow(title='Auth form vendetta', themename=theme)
+        MainWindow(title='Vendetta', themename=theme, connection=connection).mainloop()
+    finally:
         connection.close()
 
 

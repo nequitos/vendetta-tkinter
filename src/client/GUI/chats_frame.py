@@ -1,9 +1,10 @@
 from src.client.app_api import *
-from .dialog_frame import DialogFrame
+from src.client.GUI.dialog_frame import DialogFrame
+from src.client.utils.misc.connection import connection
 
 
 class ChatsFrame(ScrolledFrame):
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, connection, **kwargs):
         super(ChatsFrame, self).__init__(parent, **kwargs)
         self.configure(padding=0)
         self.canvas.configure(width=128)
@@ -12,7 +13,8 @@ class ChatsFrame(ScrolledFrame):
         self.style.configure('secondary.TButtons', borderwidth=0)
 
         self.parent = parent
-        self.dialogue_frame = DialogFrame(parent)
+        self.connection = connection
+        self.dialogue_frame = DialogFrame(parent, connection=connection)
 
         # ----- Images
         image_files = {
@@ -59,8 +61,6 @@ class ChatsFrame(ScrolledFrame):
 
 
 if __name__ == '__main__':
-    from setup import theme
-
-    root = ttk.Window(title='Chats Frame', themename=theme)
-    ChatsFrame(root).pack()
+    root = ttk.Window(title='Chats Frame')
+    ChatsFrame(root, connection=connection).pack()
     root.mainloop()

@@ -1,12 +1,14 @@
 from src.client.app_api import *
+from src.client.utils.misc.connection import connection
 
 
 class RecoveryFrame(ttk.Frame):
-    def __init__(self, parent, previous, **kwargs):
+    def __init__(self, parent, previous, connection, **kwargs):
         super(RecoveryFrame, self).__init__(parent, **kwargs)
 
         self.parent = parent
         self.previous = previous
+        self.connection = connection
 
         # form variables
         self.mail = ttk.StringVar(value='')
@@ -79,9 +81,8 @@ class RecoveryFrame(ttk.Frame):
 
 
 if __name__ == '__main__':
-    from setup import theme
     from login_frame import LoginFrame
 
-    root = ttk.Window(title='Recovery frame', themename=theme)
-    RecoveryFrame(root, LoginFrame(root)).pack()
+    root = ttk.Window(title='Recovery frame')
+    RecoveryFrame(root, LoginFrame(root, connection=connection), connection=connection).pack()
     root.mainloop()

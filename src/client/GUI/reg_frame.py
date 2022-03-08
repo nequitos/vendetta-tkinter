@@ -1,12 +1,14 @@
 from src.client.app_api import *
+from src.client.utils.misc.connection import connection
 
 
 class RegFrame(ttk.Frame):
-    def __init__(self, parent, previous, **kwargs):
+    def __init__(self, parent, previous, connection, **kwargs):
         super(RegFrame, self).__init__(parent, **kwargs)
 
         self.parent = parent
         self.previous = previous
+        self.connection = connection
 
         # form variables
         self.mail = ttk.StringVar(value='')
@@ -85,8 +87,10 @@ class RegFrame(ttk.Frame):
 
     def on_send_code(self, label, event=None):
         label.configure(bootstyle=SECONDARY, cursor='arrow')
-
-        event_loop.run_until_complete(connection.send_data(type=Events.RECEIVE_REGISTRATION_CODE))
+        Thread(
+            target=self.connection.send_data,
+            kwargs={'type': RECEIVE_REGISTRATION_CODE}
+        )
 
     def on_send(self):
         pass
@@ -97,10 +101,9 @@ class RegFrame(ttk.Frame):
 
 
 if __name__ == '__main__':
-    from setup import theme
     from tkinter.commondialog import Dialog
     from login_frame import LoginFrame
 
-    root = ttk.Window(title='Registration frame', themename=theme)
-    RegFrame(root, LoginFrame(root)).pack()
+    root = ttk.Window(title='Registration frame')
+    RegFrame(root, LoginFrame(root, connection=connection), connection=connection).pack()
     root.mainloop()

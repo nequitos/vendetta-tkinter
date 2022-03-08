@@ -1,13 +1,15 @@
 from src.client.app_api import *
-from .reg_frame import RegFrame
-from .recovery_frame import RecoveryFrame
+from src.client.GUI.reg_frame import RegFrame
+from src.client.GUI.recovery_frame import RecoveryFrame
+from src.client.utils.misc.connection import connection
 
 
 class LoginFrame(ttk.Frame):
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, connection, **kwargs):
         super(LoginFrame, self).__init__(parent, **kwargs)
 
         self.parent = parent
+        self.connection = connection
 
         # form variables
         self.login = ttk.StringVar(value='')
@@ -81,8 +83,6 @@ class LoginFrame(ttk.Frame):
 
 
 if __name__ == '__main__':
-    from setup import theme
-
-    root = ttk.Window(title='Login frame', themename=theme)
-    LoginFrame(root).pack()
+    root = ttk.Window(title='Login frame')
+    LoginFrame(root, connection=connection).pack()
     root.mainloop()

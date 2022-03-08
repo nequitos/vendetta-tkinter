@@ -1,11 +1,12 @@
 from src.client.app_api import *
-from .chats_frame import ChatsFrame
+from src.client.GUI.chats_frame import ChatsFrame
+from src.client.utils.misc.connection import connection
 
 from pathlib import Path
 
 
 class TabsFrame(ttk.Frame):
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, connection, **kwargs):
         super(TabsFrame, self).__init__(parent, **kwargs)
         self.configure(padding=0)
 
@@ -13,7 +14,8 @@ class TabsFrame(ttk.Frame):
         self.style.configure('secondary.TButton', borderwidth=0)
 
         self.parent = parent
-        self.chats_frame = ChatsFrame(self.parent)
+        self.connection = connection
+        self.chats_frame = ChatsFrame(self.parent, connection=connection)
 
         # ----- Images
         image_files = {
@@ -101,8 +103,6 @@ class TabsFrame(ttk.Frame):
 
 
 if __name__ == '__main__':
-    from setup import theme
-
-    root = ttk.Window(title='Tabs Frame', themename=theme)
-    TabsFrame(root).pack()
+    root = ttk.Window(title='Tabs Frame')
+    TabsFrame(root, connection=connection).pack()
     root.mainloop()

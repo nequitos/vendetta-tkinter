@@ -1,15 +1,16 @@
 from src.client.app_api import *
-from src.client.utils.misc import connection, event_loop
+from src.client.utils.misc.connection import connection
 
 
 class DialogFrame(ttk.Frame):
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent, connection, **kwargs):
         super(DialogFrame, self).__init__(parent, **kwargs)
         self.configure(padding=0)
 
         style = ttk.Style()
 
         self.parent = parent
+        self.connection = connection
         self.dialog_name = None
 
         # ----- Notebook
@@ -60,18 +61,18 @@ class DialogFrame(ttk.Frame):
         message_frame_line_label = ttk.Label(message_frame_line, text=message)
         message_frame_line_label.pack(side=RIGHT, fill=BOTH)
 
-        event_loop.run_until_complete(connection.send_data(
-            type=MESSAGE_NEW, data=message, dialog_name=self.dialog_name)
-        )
+        Thread(
+            target=self.connection.send_data,
+            kwargs={'type': MESSAGE_NEW, 'data': message, 'dialog_name': self.dialog_name}
+        ).start()
+
         self.scrolled_text.text.delete(1.0, END)
 
     def recv_message(self):
         while True:
-            message = connection.listen_server()
-            print(message['data'])
+            message = self.connection.listen_server()
             if len(message) > 0:
                 if message['dialog_name'] == self.dialog_name:
-                    print('YES')
                     message_frame_line = ttk.Frame(self.messages_frame.interior, bootstyle=INFO)
                     message_frame_line.pack(side=TOP, expand=TRUE, fill=X)
 
@@ -82,7 +83,6 @@ class DialogFrame(ttk.Frame):
 
 
 if __name__ == '__main__':
-
-    root = ttk.Window(title='Dialogue Frame', themename='superhero')
-    DialogFrame(root).pack()
+    root = ttk.Window(title='Dialogue Frame')
+    DialogFrame(root, connection=connection).pack()
     root.mainloop()

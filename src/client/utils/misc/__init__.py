@@ -1,2 +1,2 @@
-from .logging import *
-from .connection import *
+from . import logging
+from . import connection
