@@ -1,5 +1,5 @@
 from src.client.app_api import *
-from src.client.GUI.dialog_frame import DialogFrame
+from src.client.frames.dialogFrame import DialogFrame
 from src.client.utils.misc.connection import connection
 
 

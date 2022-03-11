@@ -81,7 +81,7 @@ class RecoveryFrame(ttk.Frame):
 
 
 if __name__ == '__main__':
-    from login_frame import LoginFrame
+    from loginFrame import LoginFrame
 
     root = ttk.Window(title='Recovery frame')
     RecoveryFrame(root, LoginFrame(root, connection=connection), connection=connection).pack()

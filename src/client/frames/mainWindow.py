@@ -1,5 +1,5 @@
 from src.client.app_api import *
-from src.client.GUI.tabs_frame import TabsFrame
+from src.client.frames.tabsFrame import TabsFrame
 from src.client.utils.misc.connection import connection
 
 from pathlib import Path

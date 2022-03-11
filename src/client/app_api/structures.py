@@ -27,4 +27,9 @@ def get_response_structure(**kwargs):
     if kwargs['type'] == RECEIVE_REGISTRATION_CODE:
         structure['type'] = RECEIVE_REGISTRATION_CODE
 
+    if kwargs['type'] == MEDIA_FILE:
+        structure['type'] = MEDIA_FILE
+        structure['file_name'] = kwargs['file_name']
+        structure['file'] = kwargs['file']
+
     return structure

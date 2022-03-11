@@ -102,7 +102,7 @@ class RegFrame(ttk.Frame):
 
 if __name__ == '__main__':
     from tkinter.commondialog import Dialog
-    from login_frame import LoginFrame
+    from loginFrame import LoginFrame
 
     root = ttk.Window(title='Registration frame')
     RegFrame(root, LoginFrame(root, connection=connection), connection=connection).pack()

@@ -3,4 +3,4 @@ from threading import Thread
 
 from .constants import *
 from .structures import *
-from .scrollbar_widgets import *
+from .scrollbarWidgets import *

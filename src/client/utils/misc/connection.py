@@ -1,3 +1,3 @@
-from src.client.handlers.server_handler import BasicDispatchClient
+from src.client.handlers.serverHandler import BasicDispatchClient
 
 connection = BasicDispatchClient()

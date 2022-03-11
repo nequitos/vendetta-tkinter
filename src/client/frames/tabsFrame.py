@@ -1,5 +1,5 @@
 from src.client.app_api import *
-from src.client.GUI.chats_frame import ChatsFrame
+from src.client.frames.chatsFrame import ChatsFrame
 from src.client.utils.misc.connection import connection
 
 from pathlib import Path

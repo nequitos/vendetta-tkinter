@@ -37,10 +37,14 @@ class ScrolledFrame(ttk.Frame):
     def _set_scrollbar(self):
         if self.interior.winfo_height() > self.parent.winfo_height():
             self.canvas.config(scrollregion=self.canvas.bbox(ALL))
+            self.canvas.bind_all('<MouseWheel>', self._on_mousewheel)
             self.scrollbar.pack(side=RIGHT, fill=Y)
         else:
             self.canvas.config(scrollregion=(0, 0, 0, 0))
             self.scrollbar.pack_forget()
+
+    def _on_mousewheel(self, event):
+        self.canvas.yview_scroll(int(-1*(event.delta/120)), 'units')
 
 
 class ScrolledText(ttk.Frame):

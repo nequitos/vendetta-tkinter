@@ -11,14 +11,13 @@ import psycopg
 
 from time import ctime
 
-users = []
-
 
 class BaseRequestHandler(socket.socket):
     def __init__(self):
         super(BaseRequestHandler, self).__init__(
             socket.AF_INET, socket.SOCK_STREAM
         )
+        self.users = []
         self.logger = logging.getLogger('server_tcp')
 
         self.event_loop = asyncio.new_event_loop()
@@ -45,7 +44,7 @@ class BaseRequestHandler(socket.socket):
         while True:
             conn, addr = await self.event_loop.sock_accept(self)
             self.logger.debug('Accepted client connection {}, address {}'.format(conn, addr))
-            users.append(conn)
+            self.users.append(conn)
 
             self.event_loop.create_task(self.listen_client(conn))
 
@@ -56,7 +55,7 @@ class BaseRequestHandler(socket.socket):
                 obj = pickle.loads(data)
             except Exception as exc:
                 self.logger.debug('Connection {} is closed'.format(conn))
-                users.remove(conn)
+                self.users.remove(conn)
                 self.logger.error('{}'.format(exc))
                 break
             else:
@@ -68,7 +67,7 @@ class BaseRequestHandler(socket.socket):
 
                     if obj['type'] == Events.MESSAGE_NEW:
                         if obj['dialog_name'] == 'main':
-                            for user in users:
+                            for user in self.users:
                                 if conn != user:
                                     await self.send_data(user, dialog_name=obj['dialog_name'], data=obj['data'])
 
@@ -126,7 +125,7 @@ class BaseDBHandler:
 if __name__ == '__main__':
     logging.basicConfig(
         level=logging.DEBUG,
-        filename=None  # 'logs/' + ctime().replace(':', '.') + '.log'
+        filename='logs/' + ctime().replace(':', '.') + '.log'
     )
     logger = logging.getLogger('main')
 

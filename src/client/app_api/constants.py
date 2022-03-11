@@ -7,3 +7,6 @@ RECOVERY_CODE = 'recovery_code'
 RECEIVE_LOGIN_CODE = 'receive_login_code'
 RECEIVE_REGISTRATION_CODE = 'registration_code'
 RECEIVE_RECOVERY_CODE = 'receive_recovery_code'
+
+MEDIA_FILE = 'media_file'
+VOICE_MESSAGE = 'voice_message'

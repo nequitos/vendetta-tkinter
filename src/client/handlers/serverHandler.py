@@ -39,9 +39,14 @@ class BasicDispatchClient(socket.socket):
     def send_data(self, **kwargs):
         response_structure = get_response_structure(**kwargs)
         if len(response_structure) > 0:
-            self.logger.debug('Sending data to server')
-            self.sendall(pickle.dumps(response_structure))
-            self.logger.debug('Data sent successfully')
+            if kwargs['type'] == MEDIA_FILE:
+                self.sendfile(kwargs['file'])
+                self.send(kwargs['file_name'])
+
+            else:
+                self.logger.debug('Sending data to server')
+                self.sendall(pickle.dumps(response_structure))
+                self.logger.debug('Data sent successfully')
 
 
 # For debugging

@@ -1,6 +1,6 @@
 from src.client.app_api import *
-from src.client.GUI.reg_frame import RegFrame
-from src.client.GUI.recovery_frame import RecoveryFrame
+from src.client.frames.regFrame import RegFrame
+from src.client.frames.recoveryFrame import RecoveryFrame
 from src.client.utils.misc.connection import connection
 
 

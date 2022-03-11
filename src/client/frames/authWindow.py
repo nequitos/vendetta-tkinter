@@ -1,5 +1,5 @@
 from src.client.app_api import *
-from src.client.GUI.login_frame import *
+from src.client.frames.loginFrame import *
 from src.client.utils.misc.connection import connection
 
 
