@@ -2,7 +2,6 @@ from src.client.app_api import *
 from src.client.utils.misc.connection import connection
 
 from tkinter.filedialog import askopenfilename
-from src.client.handlers.mediaHandler import MediaHandler
 
 
 class DialogFrame(ttk.Frame):
@@ -78,17 +77,20 @@ class DialogFrame(ttk.Frame):
         with open(file, 'rb') as media_fl:
             media = media_fl.read()
 
-        message_frame_line = ttk.Frame(self.messages_frame.interior, bootstyle=INFO)
-        message_frame_line.pack(side=TOP, expand=TRUE, fill=X)
+        message_frame_line_media = MediaFrame(self.messages_frame.interior, file, bootstyle=INFO)
+        message_frame_line_media.pack(side=TOP, expand=TRUE, fill=X)
 
-        message_frame_line_label = ttk.Label(message_frame_line, bootstyle=WARNING,
-                                             cursor='hand2')
-        message_frame_line_label.bind('<Button-1>', lambda _: MediaHandler(
-            message_frame_line_label, file
-        ))
-        message_frame_line_label.pack(side=RIGHT, fill=BOTH)
+        print(self.messages_frame.interior.pack_slaves())
 
-        MediaHandler(message_frame_line_label, file)
+        #
+        # message_frame_line_label = ttk.Label(message_frame_line, bootstyle=WARNING,
+        #                                      cursor='hand2')
+        # # message_frame_line_label.bind('<Button-1>', lambda _: MediaHandler(
+        # #     message_frame_line_label, file
+        # # ))
+        # message_frame_line_label.pack(side=RIGHT, fill=BOTH)
+        #
+        # MediaHandler(message_frame_line_label, file)
 
         # MediaHandler(
         #     message_frame_line, message_frame_line_label, file

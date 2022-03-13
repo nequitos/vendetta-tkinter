@@ -1,93 +1,86 @@
-from ttkbootstrap.constants import *
-import ttkbootstrap as ttk
-
 from PIL import Image, ImageTk
-from tkvideo import tkvideo
-from playsound import playsound
 import cv2 as cv
+import imageio
 
-from itertools import count, cycle
+from itertools import count
 
+from threading import Thread
 from pathlib import Path
 import os
 
 
 class MediaHandler:
     def __init__(self, widget, file):
-        self._temp_path = str(Path(__file__).parent.parent) + '/temp/img'
         self.widget = widget
         self.file = file
 
+        self.cancel = None
+        self.ready_to_play = None
+        self.stop_thread_flag = False
+
         self.file_extension = self._split_file(file)[1]
         self.image_extensions = ['.png', '.jpg', '.jpeg']
-        self.video_extensions = ['.mp4', '.gif']
+        self.video_extensions = ['.mp4', '.mkv', '.gif']
+
         self.handle()
 
     def handle(self):
         if self.file_extension in self.image_extensions:
-            image = self.image_load(self.file)
-            self._insert_image(image)
+            self._insert_image()
         if self.file_extension in self.video_extensions:
             if self.file_extension == '.gif':
-                gif = self.gif_load(self.file)
-                self._insert_gif(*gif)
+                self.ready_to_play = self._insert_gif
             else:
-                video = self.video_load(self.file, self.widget)
-                self._insert_video(video)
+                self.ready_to_play = self._insert_video
 
-    def _insert_video(self, video):
-        video.play()
+    def play(self):
+        thread = Thread(target=self.ready_to_play)
+        thread.start()
 
-    def _insert_gif(self, frames, length, delay=None):
-        if length == 1:
-            frame = list(frames)[0]
-            self.widget.image = frame
-            self.widget.config(image=frame)
-        else:
-            self.widget.config(image=next(frames))
-            self.widget.after(delay, lambda: self._insert_gif(frames, length-1, delay))
+    def toggle(self, event):
+        self.stop_thread_flag = not self.stop_thread_flag
+        print(self.stop_thread_flag)
 
-    def _insert_image(self, file):
-        self.widget.image = file
-        self.widget.config(image=file)
+    def stop(self):
+        self.stop_thread_flag = True
 
-    def image_load(self, file):
-        image = Image.open(file)
-        size = self.get_size(file)
+    def proceed(self):
+        self.stop_thread_flag = False
 
-        resized_image = image.resize((size[0], size[1]), Image.ANTIALIAS)
+    def _insert_video(self):
+        video = imageio.get_reader(self.file)
+        size = self.get_size(self.file)
+        frames = video.iter_data()
 
-        return ImageTk.PhotoImage(resized_image)
+        while True:
+            if not self.stop_thread_flag:
+                frame = next(frames)
+                image = ImageTk.PhotoImage(Image.fromarray(frame).resize((size[0], size[1])))
+                self.widget.config(image=image)
+                self.widget.image = image
 
-    def video_load(self, file, widget):
-        video = tkvideo(file, widget, loop=1)
-        # playsound(file)
-        size = self.get_size(file)
-        video.size = size
+    def _insert_gif(self):
+        gif = Image.open(self.file)
+        size = self.get_size(self.file)
 
-        return video
-
-    def gif_load(self, file):
-        gif = Image.open(file)
-        size = self.get_size(file)
-        print(size)
-
-        frames = []
         try:
-            for frame in count(1):
+            for frames in count(1):
                 new_frame = gif.copy()
                 new_frame.thumbnail((size[0], size[1]), Image.ANTIALIAS)
-                frames.append(ImageTk.PhotoImage(new_frame))
-                gif.seek(frame)
+                frame = ImageTk.PhotoImage(new_frame)
+                self.widget.config(image=frame)
+                self.widget.image = frame
+                gif.seek(frames)
         except EOFError as exc:
             pass
 
-        try:
-            delay = gif.info['duration']
-        except Exception as exc:
-            delay = 100
+    def _insert_image(self):
+        image = Image.open(self.file)
+        size = self.get_size(self.file)
 
-        return (i for i in frames), len(frames), delay
+        resized_image = image.resize((size[0], size[1]), Image.ANTIALIAS)
+        self.widget.image = resized_image
+        self.widget.config(image=image)
 
     @staticmethod
     def get_size(file):
@@ -99,7 +92,17 @@ class MediaHandler:
             height = video.get(cv.CAP_PROP_FRAME_HEIGHT)
             width = video.get(cv.CAP_PROP_FRAME_WIDTH)
 
+        if width <= 7680 and height <= 4320:
+            return int(float(width / 100 * 20)), int(float(height / 100 * 20))
+        if width <= 3840 and height <= 2160:
+            return int(float(width / 100 * 30)), int(float(height / 100 * 30))
+        if width <= 2048 and height <= 1080:
+            return int(float(width / 100 * 40)), int(float(height / 100 * 40))
         if width <= 1920 and height <= 1080:
+            return int(float(width / 100 * 50)), int(float(height / 100 * 50))
+        if width <= 1280 and height <= 720:
+            return int(float(width / 100 * 60)), int(float(height / 100 * 60))
+        else:
             return int(float(width / 100 * 50)), int(float(height / 100 * 50))
 
     @staticmethod
