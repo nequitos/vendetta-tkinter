@@ -1,6 +1,5 @@
 from src.client.app_api import *
 from src.client.frames.loginFrame import *
-from src.client.utils.misc.connection import connection
 
 
 class AuthorizationWindow(ttk.Window):
@@ -13,7 +12,7 @@ class AuthorizationWindow(ttk.Window):
         self.bind('<F11>', self.toggle_full_screen)
         self.bind('<Escape>', self.end_full_screen)
 
-        LoginFrame(self).pack()
+        LoginFrame(self, connection).pack()
 
     def toggle_full_screen(self, event):
         self.full_screen_state = not self.full_screen_state
@@ -25,4 +24,4 @@ class AuthorizationWindow(ttk.Window):
 
 
 if __name__ == '__main__':
-    AuthorizationWindow(title='Auth from vendetta', connection=connection).mainloop()
+    AuthorizationWindow(title='Auth from vendetta', connection='sss', themename='superhero').mainloop()

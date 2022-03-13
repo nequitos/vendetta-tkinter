@@ -1,10 +1,12 @@
 # GUI
 ttkbootstrap~=1.7.2
+tkVideo~=0.1
 
 # Asynchronous Postgres
 psycopg~=3.0.9
 psycopg-binary~=3.0.9
 
 # Other
+opencv-python~=4.5.5.64
 environs~=9.5.0
 aiofiles~=0.8.0

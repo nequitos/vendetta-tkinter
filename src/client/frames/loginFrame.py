@@ -72,14 +72,14 @@ class LoginFrame(ttk.Frame):
 
     def on_forgot(self, event=None):
         self.pack_forget()
-        RecoveryFrame(self.parent, self).pack()
+        RecoveryFrame(self.parent, self, self.connection).pack()
 
     def on_login(self):
         pass
 
     def on_reg(self):
         self.pack_forget()
-        RegFrame(self.parent, self).pack()
+        RegFrame(self.parent, self, self.connection).pack()
 
 
 if __name__ == '__main__':

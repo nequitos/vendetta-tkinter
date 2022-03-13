@@ -5,9 +5,6 @@ from tkinter.filedialog import askopenfilename
 from src.client.handlers.mediaHandler import MediaHandler
 
 
-from PIL import Image, ImageTk
-
-
 class DialogFrame(ttk.Frame):
     def __init__(self, parent, connection, **kwargs):
         super(DialogFrame, self).__init__(parent, **kwargs)
@@ -77,7 +74,6 @@ class DialogFrame(ttk.Frame):
 
     def send_file(self):
         file = askopenfilename()
-        image = ImageTk.PhotoImage(Image.open(file))
 
         with open(file, 'rb') as media_fl:
             media = media_fl.read()
@@ -88,13 +84,15 @@ class DialogFrame(ttk.Frame):
         message_frame_line_label = ttk.Label(message_frame_line, bootstyle=WARNING,
                                              cursor='hand2')
         message_frame_line_label.bind('<Button-1>', lambda _: MediaHandler(
-            message_frame_line, message_frame_line_label, file
+            message_frame_line_label, file
         ))
         message_frame_line_label.pack(side=RIGHT, fill=BOTH)
 
-        MediaHandler(
-            message_frame_line, message_frame_line_label, file
-        )
+        MediaHandler(message_frame_line_label, file)
+
+        # MediaHandler(
+        #     message_frame_line, message_frame_line_label, file
+        # )
         # Thread(
         #     target=self.connection.send_data,
         #     kwargs={'type': MEDIA_FILE, 'file': media, 'file_name': file_name}
