@@ -2,10 +2,9 @@ from PIL import Image, ImageTk
 import cv2 as cv
 import imageio
 
-from itertools import count
+from itertools import count, cycle
 
 from threading import Thread
-from pathlib import Path
 import os
 
 
@@ -16,11 +15,11 @@ class MediaHandler:
 
         self.cancel = None
         self.ready_to_play = None
-        self.stop_thread_flag = False
+        self.frames, self.delay = 10, None
 
-        self.file_extension = self._split_file(file)[1]
+        self.file_extension = self._split_file(file)[1].lower()
         self.image_extensions = ['.png', '.jpg', '.jpeg']
-        self.video_extensions = ['.mp4', '.mkv', '.gif']
+        self.video_extensions = ['.mp4', '.mov', '.mkv', '.gif']
 
         self.handle()
 
@@ -29,17 +28,21 @@ class MediaHandler:
             self._insert_image()
         if self.file_extension in self.video_extensions:
             if self.file_extension == '.gif':
+                self.frames, self.delay = self._load_gif()
                 self.ready_to_play = self._insert_gif
+                self.cancel = self.widget.after(self.delay, self.ready_to_play)
             else:
+                self.frames, self.delay = self._load_video()
                 self.ready_to_play = self._insert_video
+                self.cancel = self.widget.after(self.delay, self.ready_to_play)
 
     def play(self):
-        thread = Thread(target=self.ready_to_play)
+        thread = Thread(target=self.ready_to_play, args=(self.frames, self.delay))
+        thread.daemon = 1
         thread.start()
 
     def toggle(self, event):
-        self.stop_thread_flag = not self.stop_thread_flag
-        print(self.stop_thread_flag)
+        self.widget.after_cancel(self.cancel)
 
     def stop(self):
         self.stop_thread_flag = True
@@ -47,32 +50,68 @@ class MediaHandler:
     def proceed(self):
         self.stop_thread_flag = False
 
-    def _insert_video(self):
+    def _insert_video(self, frames, delay, index=0):
+        length = len(frames)
+        frame = frames[index]
+
+        if length == index:
+            frame = frames[0]
+            self.widget.config(image=frame)
+            self.widget.image = frame
+        else:
+            self.widget.config(image=frame)
+            self.widget.image = frame
+            self.widget.after(40, lambda: self._insert_video(frames, delay, index+1))
+
+    def _insert_gif(self, frames, delay, index=0):
+        length = len(frames)
+        frame = frames[index]
+
+        if length == index:
+            frame = frames[0]
+            self.widget.config(image=frame)
+            self.widget.image = frame
+        else:
+            self.widget.config(image=frame)
+            self.widget.after(delay, lambda: self._insert_gif(frames, delay, index+1))
+
+    def _load_video(self):
         video = imageio.get_reader(self.file)
         size = self.get_size(self.file)
-        frames = video.iter_data()
+        index = 0
+        frames = {}
 
-        while True:
-            if not self.stop_thread_flag:
-                frame = next(frames)
-                image = ImageTk.PhotoImage(Image.fromarray(frame).resize((size[0], size[1])))
-                self.widget.config(image=image)
-                self.widget.image = image
+        try:
+            for frame in video.iter_data():
+                image = ImageTk.PhotoImage(Image.fromarray(frame).resize((size[0], size[1]), Image.ANTIALIAS))
+                frames[index] = image
+                index += 1
+                print(frame)
+        except EOFError:
+            pass
 
-    def _insert_gif(self):
+        return frames, 40
+
+    def _load_gif(self):
         gif = Image.open(self.file)
         size = self.get_size(self.file)
+        frames = []
 
         try:
             for frames in count(1):
                 new_frame = gif.copy()
                 new_frame.thumbnail((size[0], size[1]), Image.ANTIALIAS)
-                frame = ImageTk.PhotoImage(new_frame)
-                self.widget.config(image=frame)
-                self.widget.image = frame
+                frames.append(ImageTk.PhotoImage(new_frame))
                 gif.seek(frames)
         except EOFError as exc:
             pass
+
+        try:
+            delay = gif.info['duration']
+        except Exception as exc:
+            delay = 100
+
+        return frames, delay
 
     def _insert_image(self):
         image = Image.open(self.file)
