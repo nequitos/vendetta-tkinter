@@ -1,13 +1,13 @@
 from ttkbootstrap.constants import *
 import ttkbootstrap as ttk
 
-from client.app_api.scrollbarWidgets import ScrolledFrame
+from client.app_api.scrollbarWidgets import YScrolledFrame
 from client.frames.dialogFrame import DialogFrame
 
 from pathlib import Path
 
 
-class ChatsFrame(ScrolledFrame):
+class ChatsFrame(YScrolledFrame):
     def __init__(self, parent, connection, **kwargs):
         super(ChatsFrame, self).__init__(parent, **kwargs)
         self.configure(padding=0)

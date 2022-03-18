@@ -9,3 +9,4 @@ pydub
 pyaudio
 environs
 aiofiles
+inotify
