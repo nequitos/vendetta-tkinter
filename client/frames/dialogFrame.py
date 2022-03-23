@@ -2,7 +2,7 @@ from ttkbootstrap.constants import *
 import ttkbootstrap as ttk
 from tkinter.filedialog import askopenfilename
 
-from client.app_api.scrollbarWidgets import XScrolledFrame, YScrolledFrame, ScrolledText
+from client.app_api.scrolled_widgets import XScrolledFrame, YScrolledFrame, ScrolledText
 from client.frames.bufferLabel import BufferLabel
 from client.app_api.constants import *
 

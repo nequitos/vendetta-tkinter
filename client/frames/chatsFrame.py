@@ -1,7 +1,7 @@
 from ttkbootstrap.constants import *
 import ttkbootstrap as ttk
 
-from client.app_api.scrollbarWidgets import YScrolledFrame
+from client.app_api.scrolled_widgets import YScrolledFrame
 from client.frames.dialogFrame import DialogFrame
 
 from pathlib import Path

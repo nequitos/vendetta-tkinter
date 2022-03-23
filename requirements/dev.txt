@@ -3,10 +3,8 @@
 ttkbootstrap
 psycopg
 psycopg-binary
-opencv-python
-imageio
-pydub
-pyaudio
 environs
 aiofiles
 inotify
+av
+numpy
